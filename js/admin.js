@@ -1,11 +1,21 @@
 /* ==========================================================================
-   MIRCHI PURE - ADMIN DASHBOARD CONTROLLER
+   MIRCHI PURE - PRODUCTION ADMIN DASHBOARD CONTROLLER
    KPI Computations, Chart Rendering, Order Status Manager, Inventory Controls
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
   window.renderAdminDashboard = renderAdminDashboard;
 });
+
+function escapeHTML(str) {
+  if (typeof str !== 'string') return str;
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
 function renderAdminDashboard() {
   renderAdminKPIs();
@@ -20,18 +30,17 @@ function renderAdminDashboard() {
 // Compute & Display KPI Cards
 // --------------------------------------------------------------------------
 function renderAdminKPIs() {
-  const orders = store.orders;
-  const products = store.getProducts();
+  const orders = store.orders || [];
+  const products = store.getProducts() || [];
 
-  const totalSales = orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+  const totalSales = orders.reduce((sum, o) => sum + Number(o.totalAmount || 0), 0);
   const pendingOrdersCount = orders.filter(o => o.orderStatus === 'Pending' || o.orderStatus === 'Processing').length;
   const completedOrdersCount = orders.filter(o => o.orderStatus === 'Delivered').length;
   
-  // Low stock products count (stock < 30 in any variant)
   let lowStockCount = 0;
   products.forEach(p => {
     p.variants.forEach(v => {
-      if (v.stock < 30) lowStockCount++;
+      if (Number(v.stock) < 30) lowStockCount++;
     });
   });
 
@@ -105,30 +114,24 @@ function renderAdminOrdersTable() {
   const tableBody = document.getElementById('admin-orders-tbody');
   if (!tableBody) return;
 
-  const orders = store.orders;
+  const orders = store.orders || [];
 
   if (orders.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="7" class="text-center">No customer orders placed yet.</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="5" class="text-center">No customer orders placed yet.</td></tr>`;
     return;
   }
 
   tableBody.innerHTML = orders.map(order => `
     <tr>
-      <td><strong>${order.orderId}</strong></td>
+      <td><strong>${escapeHTML(order.orderId)}</strong></td>
       <td>
-        <div><strong>${order.customerName}</strong></div>
-        <div style="font-size: 0.78rem; color: #6B7280;">${order.phone}</div>
+        <div><strong>${escapeHTML(order.customerName)}</strong></div>
+        <div style="font-size: 0.78rem; color: #6B7280;">${escapeHTML(order.phone)}</div>
       </td>
+      <td><strong>₹${order.totalAmount}</strong> <div style="font-size: 0.75rem; color: #6B7280;">${escapeHTML(order.paymentMode)}</div></td>
       <td>
-        <div style="font-size: 0.82rem; max-width: 220px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-          ${order.address}
-        </div>
+        <span class="status-badge ${order.orderStatus.toLowerCase()}">${escapeHTML(order.orderStatus)}</span>
       </td>
-      <td><strong>₹${order.totalAmount}</strong> <div style="font-size: 0.75rem; color: #6B7280;">${order.paymentMode}</div></td>
-      <td>
-        <span class="status-badge ${order.orderStatus.toLowerCase()}">${order.orderStatus}</span>
-      </td>
-      <td>${order.date}</td>
       <td>
         <select class="status-select" onchange="handleAdminStatusChange('${order.orderId}', this.value)">
           <option value="Pending" ${order.orderStatus === 'Pending' ? 'selected' : ''}>Pending</option>
@@ -155,7 +158,7 @@ function renderAdminProductsTable() {
   const tableBody = document.getElementById('admin-products-tbody');
   if (!tableBody) return;
 
-  const products = store.getProducts();
+  const products = store.getProducts() || [];
 
   tableBody.innerHTML = products.map(product => {
     const mainVar = product.variants[product.defaultVariantIndex || 0];
@@ -163,23 +166,21 @@ function renderAdminProductsTable() {
       <tr>
         <td>
           <div style="display: flex; align-items: center; gap: 0.8rem;">
-            <img src="${product.image}" alt="${product.name}" style="width: 44px; height: 44px; border-radius: 6px; object-fit: cover;" />
+            <img src="${product.image}" alt="${escapeHTML(product.name)}" style="width: 36px; height: 36px; border-radius: 6px; object-fit: cover;" onerror="this.src='assets/images/hero_chilli_pack.jpg'" />
             <div>
-              <strong>${product.name}</strong>
-              <div style="font-size: 0.78rem; color: #6B7280;">ID: ${product.id}</div>
+              <strong>${escapeHTML(product.name)}</strong>
             </div>
           </div>
         </td>
-        <td><span class="badge badge-gold" style="font-size: 0.75rem;">${product.category}</span></td>
-        <td><strong>₹${mainVar.price}</strong> (${mainVar.weight})</td>
+        <td><strong>₹${mainVar.price}</strong> (${escapeHTML(mainVar.weight)})</td>
         <td>
           <span style="font-weight: 700; color: ${mainVar.stock < 30 ? '#EF4444' : '#10B981'};">
             ${mainVar.stock} units
           </span>
         </td>
         <td>
-          <button class="btn btn-secondary btn-admin-sm" onclick="editProductPricePrompt('${product.id}')">
-            Edit Price/Stock
+          <button class="btn btn-secondary btn-admin-sm" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="editProductPricePrompt('${product.id}')">
+            Edit
           </button>
         </td>
       </tr>
@@ -202,18 +203,18 @@ window.editProductPricePrompt = function(productId) {
 };
 
 // --------------------------------------------------------------------------
-// Coupons & Offers Table
+// Coupons Table
 // --------------------------------------------------------------------------
 function renderAdminCouponsTable() {
   const tableBody = document.getElementById('admin-coupons-tbody');
   if (!tableBody) return;
 
-  const coupons = store.coupons;
+  const coupons = store.coupons || [];
 
   tableBody.innerHTML = coupons.map(c => `
     <tr>
-      <td><strong style="color: var(--clr-chilli-red); font-family: monospace; font-size: 1.05rem;">${c.code}</strong></td>
-      <td>${c.desc}</td>
+      <td><strong style="color: var(--clr-chilli-red); font-family: monospace;">${escapeHTML(c.code)}</strong></td>
+      <td>${escapeHTML(c.desc)}</td>
       <td>${c.discountPercent ? `${c.discountPercent}% OFF` : 'Free Delivery'}</td>
       <td>₹${c.minSpend || 0}</td>
       <td><span class="status-badge delivered">Active</span></td>
@@ -222,7 +223,7 @@ function renderAdminCouponsTable() {
 }
 
 // --------------------------------------------------------------------------
-// Admin Internal Tab Switcher
+// Admin Tabs Switcher
 // --------------------------------------------------------------------------
 function setupAdminTabs() {
   const tabBtns = document.querySelectorAll('.admin-tab-btn');

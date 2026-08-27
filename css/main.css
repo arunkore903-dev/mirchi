@@ -76,7 +76,7 @@ html {
 
 body {
   font-family: var(--ff-body);
-  background-color: #121010;
+  background-color: var(--clr-cream-bg);
   color: var(--clr-text-body);
   line-height: 1.5;
   overflow-x: hidden;
@@ -91,85 +91,8 @@ body {
   width: 100%;
   margin: 0 auto;
   position: relative;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-}
-
-/* Desktop Frame Simulator Mode Option */
-@media (min-width: 900px) {
-  body.mode-device-preview {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 0;
-    background: radial-gradient(circle at 50% 50%, #2A1015 0%, #0D0507 100%);
-  }
-
-  body.mode-device-preview .mobile-app-wrapper {
-    max-width: 420px;
-    height: 860px;
-    min-height: 860px;
-    border-radius: 44px;
-    border: 12px solid #2C2828;
-    overflow-y: auto;
-    overflow-x: hidden;
-    position: relative;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), inset 0 0 0 2px rgba(255, 255, 255, 0.1);
-  }
-
-  /* Mock Notch */
-  body.mode-device-preview .mobile-app-wrapper::before {
-    content: '';
-    position: sticky;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 140px;
-    height: 24px;
-    background: #2C2828;
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-    z-index: 9999;
-    margin-bottom: -24px;
-  }
-}
-
-/* Device Viewport Mode Toggle Bar (Floating) */
-.device-toggle-bar {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  z-index: 10000;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(28, 25, 23, 0.9);
-  backdrop-filter: blur(10px);
-  padding: 0.4rem 0.8rem;
-  border-radius: var(--radius-full);
-  color: #FFF;
-  font-family: var(--ff-ui);
-  font-size: 0.8rem;
-  font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.device-toggle-btn {
-  padding: 0.3rem 0.7rem;
-  border-radius: var(--radius-full);
-  background: transparent;
-  color: #D1C7BD;
-  font-family: var(--ff-ui);
-  font-size: 0.75rem;
-  font-weight: 700;
-  transition: all var(--transition-fast);
-}
-
-.device-toggle-btn.active {
-  background: var(--clr-chilli-red);
-  color: #FFF;
 }
 
 /* Typography Hierarchy */

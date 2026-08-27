@@ -1,6 +1,6 @@
 /* ==========================================================================
-   MIRCHI PURE - STATE STORE MANAGEMENT
-   LocalStorage persistence, Cart logic, Wishlist, Order generation
+   MIRCHI PURE - PRODUCTION STATE STORE
+   Robust LocalStorage synchronization, Cart math, Order generator
    ========================================================================== */
 
 class MirchiStore {
@@ -9,45 +9,61 @@ class MirchiStore {
   }
 
   initStore() {
-    // Products state
-    const savedProducts = localStorage.getItem('mp_products');
-    this.products = savedProducts ? JSON.parse(savedProducts) : INITIAL_PRODUCTS;
+    try {
+      const savedProducts = localStorage.getItem('mp_products');
+      this.products = savedProducts ? JSON.parse(savedProducts) : INITIAL_PRODUCTS;
+    } catch (e) {
+      console.warn('LocalStorage error reading products, falling back to seed data:', e);
+      this.products = INITIAL_PRODUCTS;
+    }
 
-    // Cart state: [{ productId, variantIndex, weight, price, originalPrice, qty }]
-    const savedCart = localStorage.getItem('mp_cart');
-    this.cart = savedCart ? JSON.parse(savedCart) : [];
+    try {
+      const savedCart = localStorage.getItem('mp_cart');
+      this.cart = savedCart ? JSON.parse(savedCart) : [];
+    } catch (e) {
+      this.cart = [];
+    }
 
-    // Wishlist state: array of productIds
-    const savedWishlist = localStorage.getItem('mp_wishlist');
-    this.wishlist = savedWishlist ? JSON.parse(savedWishlist) : [];
+    try {
+      const savedWishlist = localStorage.getItem('mp_wishlist');
+      this.wishlist = savedWishlist ? JSON.parse(savedWishlist) : [];
+    } catch (e) {
+      this.wishlist = [];
+    }
 
-    // Orders state
-    const savedOrders = localStorage.getItem('mp_orders');
-    this.orders = savedOrders ? JSON.parse(savedOrders) : INITIAL_ORDERS;
+    try {
+      const savedOrders = localStorage.getItem('mp_orders');
+      this.orders = savedOrders ? JSON.parse(savedOrders) : INITIAL_ORDERS;
+    } catch (e) {
+      this.orders = INITIAL_ORDERS;
+    }
 
-    // Coupons state
-    const savedCoupons = localStorage.getItem('mp_coupons');
-    this.coupons = savedCoupons ? JSON.parse(savedCoupons) : INITIAL_COUPONS;
+    try {
+      const savedCoupons = localStorage.getItem('mp_coupons');
+      this.coupons = savedCoupons ? JSON.parse(savedCoupons) : INITIAL_COUPONS;
+    } catch (e) {
+      this.coupons = INITIAL_COUPONS;
+    }
 
-    // Active applied coupon
     this.appliedCoupon = null;
-
-    // Active View Mode: 'store' or 'admin'
     this.viewMode = localStorage.getItem('mp_view_mode') || 'store';
-
     this.saveState();
   }
 
   saveState() {
-    localStorage.setItem('mp_products', JSON.stringify(this.products));
-    localStorage.setItem('mp_cart', JSON.stringify(this.cart));
-    localStorage.setItem('mp_wishlist', JSON.stringify(this.wishlist));
-    localStorage.setItem('mp_orders', JSON.stringify(this.orders));
-    localStorage.setItem('mp_coupons', JSON.stringify(this.coupons));
-    localStorage.setItem('mp_view_mode', this.viewMode);
+    try {
+      localStorage.setItem('mp_products', JSON.stringify(this.products));
+      localStorage.setItem('mp_cart', JSON.stringify(this.cart));
+      localStorage.setItem('mp_wishlist', JSON.stringify(this.wishlist));
+      localStorage.setItem('mp_orders', JSON.stringify(this.orders));
+      localStorage.setItem('mp_coupons', JSON.stringify(this.coupons));
+      localStorage.setItem('mp_view_mode', this.viewMode);
+    } catch (e) {
+      console.warn('LocalStorage write failed (Incognito/Quota Exceeded):', e);
+    }
   }
 
-  // --- Product Helpers ---
+  // --- Product Management ---
   getProducts() {
     return this.products;
   }
@@ -76,16 +92,15 @@ class MirchiStore {
     const product = this.getProductById(productId);
     if (!product) return;
 
-    const vIdx = variantIndex !== null ? variantIndex : product.defaultVariantIndex;
+    const vIdx = variantIndex !== null ? variantIndex : (product.defaultVariantIndex || 0);
     const variant = product.variants[vIdx];
 
-    // Check if item already exists in cart with same product and weight variant
     const existingIndex = this.cart.findIndex(
       item => item.productId === productId && item.weight === variant.weight
     );
 
     if (existingIndex > -1) {
-      this.cart[existingIndex].qty += qty;
+      this.cart[existingIndex].qty += Math.max(1, parseInt(qty, 10));
     } else {
       this.cart.push({
         productId: product.id,
@@ -94,9 +109,9 @@ class MirchiStore {
         image: product.image,
         variantIndex: vIdx,
         weight: variant.weight,
-        price: variant.price,
-        originalPrice: variant.originalPrice,
-        qty: qty
+        price: Number(variant.price),
+        originalPrice: Number(variant.originalPrice || variant.price),
+        qty: Math.max(1, parseInt(qty, 10))
       });
     }
 
@@ -113,11 +128,12 @@ class MirchiStore {
   }
 
   updateCartQty(index, newQty) {
+    const q = parseInt(newQty, 10);
     if (index >= 0 && index < this.cart.length) {
-      if (newQty <= 0) {
+      if (q <= 0) {
         this.removeFromCart(index);
       } else {
-        this.cart[index].qty = newQty;
+        this.cart[index].qty = q;
         this.saveState();
         window.dispatchEvent(new CustomEvent('mp:cart-changed'));
       }
@@ -132,7 +148,7 @@ class MirchiStore {
   }
 
   getCartSubtotal() {
-    return this.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    return this.cart.reduce((sum, item) => sum + (Number(item.price) * Number(item.qty)), 0);
   }
 
   getDiscountAmount() {
@@ -140,7 +156,7 @@ class MirchiStore {
     if (!this.appliedCoupon) return 0;
     
     if (this.appliedCoupon.discountPercent) {
-      return Math.round((subtotal * this.appliedCoupon.discountPercent) / 100);
+      return Math.round((subtotal * Number(this.appliedCoupon.discountPercent)) / 100);
     }
     return 0;
   }
@@ -149,9 +165,9 @@ class MirchiStore {
     const subtotal = this.getCartSubtotal();
     if (subtotal === 0) return 0;
     if (subtotal >= 499 || (this.appliedCoupon && this.appliedCoupon.freeShipping)) {
-      return 0; // Free delivery above 499 or with coupon
+      return 0;
     }
-    return 40; // Flat ₹40 delivery
+    return 40;
   }
 
   getCartTotal() {
@@ -162,7 +178,8 @@ class MirchiStore {
   }
 
   applyCoupon(code) {
-    const cleanCode = code.trim().toUpperCase();
+    if (!code) return { success: false, message: "Please enter a coupon code." };
+    const cleanCode = String(code).trim().toUpperCase();
     const coupon = this.coupons.find(c => c.code === cleanCode);
     const subtotal = this.getCartSubtotal();
 
@@ -171,7 +188,7 @@ class MirchiStore {
     }
 
     if (coupon.minSpend && subtotal < coupon.minSpend) {
-      return { success: false, message: `Minimum spend of ₹${coupon.minSpend} required for code ${cleanCode}.` };
+      return { success: false, message: `Minimum spend of ₹${coupon.minSpend} required.` };
     }
 
     this.appliedCoupon = coupon;
@@ -243,7 +260,8 @@ class MirchiStore {
   }
 
   findOrder(query) {
-    const q = query.trim().toLowerCase();
+    if (!query) return null;
+    const q = String(query).trim().toLowerCase();
     return this.orders.find(
       o => o.orderId.toLowerCase() === q || o.phone.toLowerCase().includes(q)
     );
@@ -254,7 +272,6 @@ class MirchiStore {
     if (order) {
       order.orderStatus = newStatus;
       
-      // Update tracking steps logically based on status
       if (newStatus === 'Processing') {
         order.trackingSteps[1].done = true;
         order.trackingSteps[1].time = "In Progress";

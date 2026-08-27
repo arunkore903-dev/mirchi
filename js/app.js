@@ -1,6 +1,6 @@
 /* ==========================================================================
-   MIRCHI PURE - STOREFRONT CONTROLLER
-   Catalog Rendering, Weight Pickers, Cart Drawer, Checkout, Modals, Recipes
+   MIRCHI PURE - PRODUCTION STOREFRONT APPLICATION
+   Modular UI Controller, Input Validation, Service Worker, Accessibility
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initApp() {
+  registerServiceWorker();
   renderProducts();
   renderProcessSteps();
   renderRecipes();
@@ -15,21 +16,56 @@ function initApp() {
   updateCartUI();
   updateWishlistUI();
   setupEventListeners();
+  setupAccessibilityListeners();
 }
 
 // --------------------------------------------------------------------------
-// Event Listeners Registration
+// Service Worker Registration for Production PWA
+// --------------------------------------------------------------------------
+function registerServiceWorker() {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then((reg) => console.log('Mirchi Pure SW registered cleanly:', reg.scope))
+        .catch((err) => console.warn('SW registration skipped:', err));
+    });
+  }
+}
+
+// --------------------------------------------------------------------------
+// Input Validation Helpers
+// --------------------------------------------------------------------------
+function validatePhone(phone) {
+  const clean = phone.replace(/[\s\-\+\(\)]/g, '');
+  return /^(?:0|\+?91)?([6-9]\d{9})$/.test(clean);
+}
+
+function validatePincode(pincode) {
+  return /^\d{6}$/.test(pincode.trim());
+}
+
+function escapeHTML(str) {
+  if (typeof str !== 'string') return str;
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// --------------------------------------------------------------------------
+// Event Listeners & Keyboard Accessibility
 // --------------------------------------------------------------------------
 function setupEventListeners() {
-  // Store state change listeners
   window.addEventListener('mp:cart-changed', () => updateCartUI());
   window.addEventListener('mp:wishlist-changed', () => {
     updateWishlistUI();
-    renderProducts(); // Re-render product wishlist hearts
+    renderProducts();
   });
   window.addEventListener('mp:products-changed', () => renderProducts());
 
-  // Category Filtering
+  // Category Filter Pills
   const filterPills = document.querySelectorAll('.filter-pill');
   filterPills.forEach(pill => {
     pill.addEventListener('click', (e) => {
@@ -40,11 +76,15 @@ function setupEventListeners() {
     });
   });
 
-  // Search input
+  // Search input with debounce
   const searchInput = document.getElementById('catalog-search');
   if (searchInput) {
+    let timeout;
     searchInput.addEventListener('input', (e) => {
-      renderProducts('All', e.target.value.toLowerCase());
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        renderProducts('All', e.target.value.toLowerCase().trim());
+      }, 200);
     });
   }
 
@@ -62,7 +102,7 @@ function setupEventListeners() {
     });
   }
 
-  // Checkout Modal Trigger
+  // Checkout Trigger
   const proceedCheckoutBtn = document.getElementById('proceed-checkout-btn');
   if (proceedCheckoutBtn) proceedCheckoutBtn.addEventListener('click', openCheckoutModal);
 
@@ -78,7 +118,7 @@ function setupEventListeners() {
     });
   }
 
-  // Checkout Form Submission
+  // Form Submissions
   const checkoutForm = document.getElementById('checkout-form');
   if (checkoutForm) {
     checkoutForm.addEventListener('submit', (e) => {
@@ -87,7 +127,6 @@ function setupEventListeners() {
     });
   }
 
-  // Order Tracking Modal Triggers
   const trackBtns = document.querySelectorAll('[data-action="open-tracker"]');
   trackBtns.forEach(btn => btn.addEventListener('click', openTrackerModal));
 
@@ -99,11 +138,9 @@ function setupEventListeners() {
     });
   }
 
-  // WhatsApp Order Modal Trigger
   const whatsappBtns = document.querySelectorAll('[data-action="open-whatsapp-order"]');
   whatsappBtns.forEach(btn => btn.addEventListener('click', openWhatsAppModal));
 
-  // Portal View Switcher (Storefront <-> Admin)
   const modeSwitchBtns = document.querySelectorAll('[data-action="toggle-admin-mode"]');
   modeSwitchBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -114,7 +151,6 @@ function setupEventListeners() {
     });
   });
 
-  // Modal Close buttons
   const modalCloseBtns = document.querySelectorAll('.modal-close-btn, [data-action="close-modal"]');
   modalCloseBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -123,7 +159,6 @@ function setupEventListeners() {
     });
   });
 
-  // Close modals on backdrop click
   const modals = document.querySelectorAll('.modal-wrapper');
   modals.forEach(modal => {
     modal.addEventListener('click', (e) => {
@@ -131,13 +166,19 @@ function setupEventListeners() {
     });
   });
 
-  // Initial View Mode Setup
   toggleViewModeUI();
 }
 
-// --------------------------------------------------------------------------
-// Store View vs Admin View Toggle
-// --------------------------------------------------------------------------
+function setupAccessibilityListeners() {
+  // Keydown Escape closes open modals & drawers
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeCartDrawer();
+      document.querySelectorAll('.modal-wrapper.active').forEach(m => m.classList.remove('active'));
+    }
+  });
+}
+
 function toggleViewModeUI() {
   const storeView = document.getElementById('store-view');
   const adminPortal = document.getElementById('admin-portal');
@@ -155,7 +196,7 @@ function toggleViewModeUI() {
 }
 
 // --------------------------------------------------------------------------
-// Product Catalog Rendering & Weight Selection Logic
+// Product Catalog Rendering
 // --------------------------------------------------------------------------
 function renderProducts(categoryFilter = 'All', searchFilter = '') {
   const grid = document.getElementById('products-grid');
@@ -176,7 +217,7 @@ function renderProducts(categoryFilter = 'All', searchFilter = '') {
 
   if (products.length === 0) {
     grid.innerHTML = `
-      <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem;">
+      <div style="grid-column: 1/-1; text-align: center; padding: 3rem 1rem;">
         <i class="fa-solid fa-pepper-hot" style="font-size: 3rem; color: var(--clr-text-muted);"></i>
         <h3 style="margin-top: 1rem;">No Chilli Products Found</h3>
         <p style="color: var(--clr-text-muted);">Try adjusting your search or category filter.</p>
@@ -190,7 +231,6 @@ function renderProducts(categoryFilter = 'All', searchFilter = '') {
     const activeVarIdx = product.activeVariantIndex !== undefined ? product.activeVariantIndex : product.defaultVariantIndex;
     const variant = product.variants[activeVarIdx];
 
-    // Build flame heat indicators
     let flamesHtml = '';
     for (let i = 1; i <= 5; i++) {
       if (i <= product.spiceLevel) {
@@ -203,24 +243,24 @@ function renderProducts(categoryFilter = 'All', searchFilter = '') {
     return `
       <div class="product-card" id="card-${product.id}">
         <div class="card-top-badges">
-          <span class="badge badge-gold">${product.badge || 'Fresh Batch'}</span>
-          <button class="wishlist-btn ${isWish ? 'active' : ''}" onclick="toggleWishlistHandler('${product.id}')" title="Wishlist">
+          <span class="badge badge-gold">${escapeHTML(product.badge || 'Fresh Batch')}</span>
+          <button class="wishlist-btn ${isWish ? 'active' : ''}" onclick="toggleWishlistHandler('${product.id}')" aria-label="Toggle Wishlist">
             <i class="${isWish ? 'fa-solid fa-heart' : 'fa-regular fa-heart'}"></i>
           </button>
         </div>
 
         <div class="product-img-box" onclick="openProductDetailModal('${product.id}')">
-          <img src="${product.image}" alt="${product.name}" loading="lazy" />
+          <img src="${product.image}" alt="${escapeHTML(product.name)}" loading="lazy" decoding="async" onerror="this.src='assets/images/hero_chilli_pack.jpg'" />
         </div>
 
         <div class="product-content">
           <div class="spice-level-indicator">
             ${flamesHtml}
-            <span>${product.spiceText}</span>
+            <span>${escapeHTML(product.spiceText)}</span>
           </div>
 
-          <h3 class="product-title" onclick="openProductDetailModal('${product.id}')">${product.name}</h3>
-          <p class="product-short-desc">${product.description}</p>
+          <h3 class="product-title" onclick="openProductDetailModal('${product.id}')">${escapeHTML(product.name)}</h3>
+          <p class="product-short-desc">${escapeHTML(product.description)}</p>
 
           <div class="weight-selector-label">Select Pack Size:</div>
           <div class="weight-pills">
@@ -253,7 +293,6 @@ function renderProducts(categoryFilter = 'All', searchFilter = '') {
   }).join('');
 }
 
-// Handler for weight variant selection in product card
 window.selectWeightVariant = function(productId, variantIdx) {
   const product = store.getProductById(productId);
   if (product) {
@@ -298,21 +337,21 @@ window.openProductDetailModal = function(productId) {
     container.innerHTML = `
       <div class="product-detail-grid">
         <div style="border-radius: var(--radius-lg); overflow: hidden; height: 260px; box-shadow: var(--shadow-md);">
-          <img src="${product.image}" alt="${product.name}" style="width:100%; height:100%; object-fit:cover;" />
+          <img src="${product.image}" alt="${escapeHTML(product.name)}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='assets/images/hero_chilli_pack.jpg'" />
         </div>
 
         <div>
-          <span class="badge badge-red" style="margin-bottom: 0.6rem;">${product.category}</span>
-          <h2 style="font-family: var(--ff-heading); margin-bottom: 0.4rem; color: var(--clr-deep-red);">${product.name}</h2>
+          <span class="badge badge-red" style="margin-bottom: 0.6rem;">${escapeHTML(product.category)}</span>
+          <h2 style="font-family: var(--ff-heading); margin-bottom: 0.4rem; color: var(--clr-deep-red);">${escapeHTML(product.name)}</h2>
           
           <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem;">
             <div style="color: #FFC107; font-size: 0.85rem;">
               <i class="fa-solid fa-star"></i> ${product.rating} (${product.reviewsCount} Reviews)
             </div>
-            <span class="badge badge-green">${product.spiceText}</span>
+            <span class="badge badge-green">${escapeHTML(product.spiceText)}</span>
           </div>
 
-          <p style="color: var(--clr-text-body); margin-bottom: 1.2rem; font-size: 0.88rem;">${product.description}</p>
+          <p style="color: var(--clr-text-body); margin-bottom: 1.2rem; font-size: 0.88rem;">${escapeHTML(product.description)}</p>
 
           <div style="margin-bottom: 1rem;">
             <div class="weight-selector-label">Available Weights:</div>
@@ -340,7 +379,6 @@ window.openProductDetailModal = function(productId) {
             </button>
           </div>
 
-          <!-- Trust bullets -->
           <div style="background: var(--clr-cream-bg); padding: 0.8rem; border-radius: var(--radius-md); font-size: 0.8rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;">
             <div><i class="fa-solid fa-circle-check text-green"></i> 100% Quality</div>
             <div><i class="fa-solid fa-circle-check text-green"></i> Hygienic Mill</div>
@@ -350,7 +388,6 @@ window.openProductDetailModal = function(productId) {
         </div>
       </div>
 
-      <!-- Detail Tabs Section -->
       <div class="detail-tabs">
         <button class="tab-btn active" data-tab="tab-love">Why You'll Love It</button>
         <button class="tab-btn" data-tab="tab-prep">Preparation & Ingredients</button>
@@ -361,25 +398,24 @@ window.openProductDetailModal = function(productId) {
         <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem;">
           ${product.whyYouLoveIt.map(item => `
             <li style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
-              <i class="fa-solid fa-pepper-hot text-red"></i> <span>${item}</span>
+              <i class="fa-solid fa-pepper-hot text-red"></i> <span>${escapeHTML(item)}</span>
             </li>
           `).join('')}
         </ul>
       </div>
 
       <div class="tab-content-panel" id="tab-prep">
-        <p><strong>Ingredients:</strong> ${product.ingredients}</p>
-        <p style="margin-top: 0.4rem;"><strong>Preparation:</strong> ${product.prepProcess}</p>
+        <p><strong>Ingredients:</strong> ${escapeHTML(product.ingredients)}</p>
+        <p style="margin-top: 0.4rem;"><strong>Preparation:</strong> ${escapeHTML(product.prepProcess)}</p>
       </div>
 
       <div class="tab-content-panel" id="tab-storage">
-        <p><strong>Packaging:</strong> ${product.packaging}</p>
-        <p style="margin-top: 0.4rem;"><strong>Storage:</strong> ${product.storage}</p>
-        <p style="margin-top: 0.4rem;"><strong>Shelf Life:</strong> ${product.shelfLife}</p>
+        <p><strong>Packaging:</strong> ${escapeHTML(product.packaging)}</p>
+        <p style="margin-top: 0.4rem;"><strong>Storage:</strong> ${escapeHTML(product.storage)}</p>
+        <p style="margin-top: 0.4rem;"><strong>Shelf Life:</strong> ${escapeHTML(product.shelfLife)}</p>
       </div>
     `;
 
-    // Attach internal listeners for variants & tabs inside modal
     product.variants.forEach((v, idx) => {
       const vBtn = container.querySelector(`#detail-var-${idx}`);
       if (vBtn) {
@@ -408,7 +444,6 @@ window.openProductDetailModal = function(productId) {
       });
     }
 
-    // Tabs switching
     const tabBtns = container.querySelectorAll('.tab-btn');
     const tabPanels = container.querySelectorAll('.tab-content-panel');
     tabBtns.forEach(tBtn => {
@@ -460,7 +495,6 @@ function updateCartUI() {
   const shipping = store.getShippingFee();
   const total = store.getCartTotal();
 
-  // Free shipping progress logic (Threshold ₹499)
   const threshold = 499;
   if (subtotal >= threshold || (store.appliedCoupon && store.appliedCoupon.freeShipping)) {
     if (freeShipBar) freeShipBar.style.width = '100%';
@@ -483,14 +517,14 @@ function updateCartUI() {
   } else {
     container.innerHTML = store.cart.map((item, idx) => `
       <div class="cart-item">
-        <img src="${item.image}" alt="${item.name}" class="cart-item-img" />
+        <img src="${item.image}" alt="${escapeHTML(item.name)}" class="cart-item-img" onerror="this.src='assets/images/hero_chilli_pack.jpg'" />
         <div class="cart-item-details">
           <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <div>
-              <span class="cart-item-title">${item.name}</span>
-              <div class="cart-item-meta">Pack: ${item.weight}</div>
+              <span class="cart-item-title">${escapeHTML(item.name)}</span>
+              <div class="cart-item-meta">Pack: ${escapeHTML(item.weight)}</div>
             </div>
-            <button onclick="store.removeFromCart(${idx})" style="color: var(--clr-text-muted); font-size: 0.9rem;">
+            <button onclick="store.removeFromCart(${idx})" style="color: var(--clr-text-muted); font-size: 0.9rem;" aria-label="Remove item">
               <i class="fa-solid fa-trash-can"></i>
             </button>
           </div>
@@ -519,7 +553,7 @@ function updateWishlistUI() {
 }
 
 // --------------------------------------------------------------------------
-// Checkout Modal Flow
+// Checkout Flow with Production Validation
 // --------------------------------------------------------------------------
 function openCheckoutModal() {
   if (store.cart.length === 0) {
@@ -533,7 +567,7 @@ function openCheckoutModal() {
   if (summaryEl) {
     summaryEl.innerHTML = store.cart.map(item => `
       <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.3rem;">
-        <span>${item.name} (${item.weight}) x${item.qty}</span>
+        <span>${escapeHTML(item.name)} (${escapeHTML(item.weight)}) x${item.qty}</span>
         <strong>₹${item.price * item.qty}</strong>
       </div>
     `).join('') + `
@@ -548,34 +582,48 @@ function openCheckoutModal() {
 }
 
 function handleOrderSubmit() {
-  const name = document.getElementById('cust-name')?.value || '';
-  const phone = document.getElementById('cust-phone')?.value || '';
+  const name = document.getElementById('cust-name')?.value.trim() || '';
+  const phone = document.getElementById('cust-phone')?.value.trim() || '';
   const emailInput = document.getElementById('cust-email');
-  const email = emailInput ? emailInput.value : 'N/A';
-  const address = document.getElementById('cust-address')?.value || '';
-  const city = document.getElementById('cust-city')?.value || '';
-  const pincode = document.getElementById('cust-pincode')?.value || '';
+  const email = emailInput ? emailInput.value.trim() : 'N/A';
+  const address = document.getElementById('cust-address')?.value.trim() || '';
+  const city = document.getElementById('cust-city')?.value.trim() || '';
+  const pincode = document.getElementById('cust-pincode')?.value.trim() || '';
   const paymentModeInput = document.querySelector('input[name="payment-mode"]:checked');
   const paymentMode = paymentModeInput ? paymentModeInput.value : 'Cash on Delivery';
 
   if (!name || !phone || !address || !city || !pincode) {
-    showToast("Please fill in mandatory address fields.", "error");
+    showToast("Please fill in all mandatory address fields.", "error");
+    return;
+  }
+
+  if (!validatePhone(phone)) {
+    showToast("Please enter a valid 10-digit Indian mobile number.", "error");
+    return;
+  }
+
+  if (!validatePincode(pincode)) {
+    showToast("Please enter a valid 6-digit Pincode.", "error");
     return;
   }
 
   const newOrder = store.createOrder({
-    name, phone, email, address, city, pincode, paymentMode
+    name: escapeHTML(name),
+    phone: escapeHTML(phone),
+    email: escapeHTML(email),
+    address: escapeHTML(address),
+    city: escapeHTML(city),
+    pincode: escapeHTML(pincode),
+    paymentMode
   });
 
   const checkoutModal = document.getElementById('checkout-modal');
   if (checkoutModal) checkoutModal.classList.remove('active');
 
-  // Trigger celebration confetti if canvas script exists
   if (window.confetti) {
     window.confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
   }
 
-  // Open Order Success Modal
   openOrderSuccessModal(newOrder);
 }
 
@@ -594,9 +642,9 @@ function openOrderSuccessModal(order) {
     </div>
 
     <div style="background: var(--clr-cream-bg); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.2rem; font-size: 0.85rem;">
-      <p><strong>Customer:</strong> ${order.customerName} (${order.phone})</p>
-      <p style="margin-top: 0.3rem;"><strong>Address:</strong> ${order.address}</p>
-      <p style="margin-top: 0.3rem;"><strong>Payment:</strong> ${order.paymentMode} (${order.paymentStatus})</p>
+      <p><strong>Customer:</strong> ${escapeHTML(order.customerName)} (${escapeHTML(order.phone)})</p>
+      <p style="margin-top: 0.3rem;"><strong>Address:</strong> ${escapeHTML(order.address)}</p>
+      <p style="margin-top: 0.3rem;"><strong>Payment:</strong> ${escapeHTML(order.paymentMode)} (${escapeHTML(order.paymentStatus)})</p>
       <p style="margin-top: 0.3rem;"><strong>Total Paid:</strong> ₹${order.totalAmount}</p>
     </div>
 
@@ -665,19 +713,18 @@ function handleTrackingSearch() {
       <div style="margin-bottom: 0.8rem; font-size: 0.82rem;">
         <strong>Items Ordered:</strong>
         <ul style="list-style: none; margin-top: 0.3rem; color: var(--clr-text-body);">
-          ${order.items.map(i => `<li>• ${i.name} x${i.qty} - ₹${i.price * i.qty}</li>`).join('')}
+          ${order.items.map(i => `<li>• ${escapeHTML(i.name)} x${i.qty} - ₹${i.price * i.qty}</li>`).join('')}
         </ul>
       </div>
 
-      <!-- Tracking Steps Visual Line -->
       <div style="position: relative; padding-left: 1.2rem; border-left: 2px solid var(--clr-border); display: flex; flex-direction: column; gap: 0.9rem;">
         ${order.trackingSteps.map(s => `
           <div style="position: relative;">
             <div style="position: absolute; left: -1.55rem; top: 0; width: 12px; height: 12px; border-radius: 50%; background: ${s.done ? 'var(--clr-chilli-red)' : 'var(--clr-border)'}; border: 2px solid #FFF;"></div>
             <div style="font-family: var(--ff-ui); font-weight: ${s.done ? '700' : '500'}; font-size: 0.82rem; color: ${s.done ? 'var(--clr-heading-dark)' : 'var(--clr-text-muted)'};">
-              ${s.step}
+              ${escapeHTML(s.step)}
             </div>
-            <div style="font-size: 0.72rem; color: var(--clr-text-muted);">${s.time}</div>
+            <div style="font-size: 0.72rem; color: var(--clr-text-muted);">${escapeHTML(s.time)}</div>
           </div>
         `).join('')}
       </div>
@@ -686,7 +733,7 @@ function handleTrackingSearch() {
 }
 
 // --------------------------------------------------------------------------
-// WhatsApp Ordering Integration Modal
+// WhatsApp Ordering
 // --------------------------------------------------------------------------
 function openWhatsAppModal() {
   const modal = document.getElementById('whatsapp-modal');
@@ -731,8 +778,8 @@ function renderProcessSteps() {
       <div class="step-icon-wrapper">
         <i class="${s.icon}"></i>
       </div>
-      <h4 class="step-title">${s.title}</h4>
-      <p class="step-desc">${s.desc}</p>
+      <h4 class="step-title">${escapeHTML(s.title)}</h4>
+      <p class="step-desc">${escapeHTML(s.desc)}</p>
     </div>
   `).join('');
 }
@@ -744,13 +791,13 @@ function renderRecipes() {
   container.innerHTML = RECIPES_DATA.map(r => `
     <div class="recipe-card">
       <div class="recipe-img-wrapper">
-        <img src="${r.image}" alt="${r.title}" loading="lazy" />
-        <span class="recipe-time-badge"><i class="fa-solid fa-clock"></i> ${r.prepTime}</span>
+        <img src="${r.image}" alt="${escapeHTML(r.title)}" loading="lazy" decoding="async" onerror="this.src='assets/images/chilli_curry_dish.jpg'" />
+        <span class="recipe-time-badge"><i class="fa-solid fa-clock"></i> ${escapeHTML(r.prepTime)}</span>
       </div>
       <div class="recipe-body">
-        <span class="recipe-category">${r.category}</span>
-        <h3 class="recipe-title">${r.title}</h3>
-        <p class="recipe-desc">${r.desc}</p>
+        <span class="recipe-category">${escapeHTML(r.category)}</span>
+        <h3 class="recipe-title">${escapeHTML(r.title)}</h3>
+        <p class="recipe-desc">${escapeHTML(r.desc)}</p>
 
         <div class="recipe-card-footer">
           <button class="btn btn-secondary" style="padding: 0.35rem 0.7rem; font-size: 0.78rem;"
@@ -776,33 +823,33 @@ window.openRecipeDetailModal = function(recipeId) {
   if (!modal || !container) return;
 
   container.innerHTML = `
-    <h3 style="font-family: var(--ff-heading); color: var(--clr-deep-red); margin-bottom: 0.3rem;">${recipe.title}</h3>
+    <h3 style="font-family: var(--ff-heading); color: var(--clr-deep-red); margin-bottom: 0.3rem;">${escapeHTML(recipe.title)}</h3>
     <div style="font-size: 0.8rem; color: var(--clr-text-muted); margin-bottom: 1rem;">
-      <span>Category: ${recipe.category}</span> | <span>Prep Time: ${recipe.prepTime}</span>
+      <span>Category: ${escapeHTML(recipe.category)}</span> | <span>Prep Time: ${escapeHTML(recipe.prepTime)}</span>
     </div>
     
     <div style="height: 180px; border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1rem;">
-      <img src="${recipe.image}" alt="${recipe.title}" style="width:100%; height:100%; object-fit:cover;" />
+      <img src="${recipe.image}" alt="${escapeHTML(recipe.title)}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='assets/images/chilli_curry_dish.jpg'" />
     </div>
 
     <div style="margin-bottom: 1rem;">
       <h4 style="color: var(--clr-heading-dark); margin-bottom: 0.4rem; font-size: 0.9rem;">Key Ingredients:</h4>
       <ul style="list-style: disc; padding-left: 1rem; font-size: 0.85rem;">
-        ${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}
+        ${recipe.ingredients.map(i => `<li>${escapeHTML(i)}</li>`).join('')}
       </ul>
     </div>
 
     <div style="margin-bottom: 1.2rem;">
       <h4 style="color: var(--clr-heading-dark); margin-bottom: 0.4rem; font-size: 0.9rem;">Preparation Method:</h4>
       <ol style="padding-left: 1rem; font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem;">
-        ${recipe.steps.map(s => `<li>${s}</li>`).join('')}
+        ${recipe.steps.map(s => `<li>${escapeHTML(s)}</li>`).join('')}
       </ol>
     </div>
 
     <div style="background: linear-gradient(135deg, #FFF6E8, #FFEDD5); border: 1px solid var(--clr-gold); border-radius: var(--radius-md); padding: 0.8rem; display: flex; align-items: center; justify-content: space-between;">
       <div>
         <div style="font-size: 0.72rem; font-weight: 700; color: var(--clr-amber-spice); text-transform: uppercase;">Recommended Pack:</div>
-        <strong style="color: var(--clr-deep-red); font-size: 0.88rem;">${recipe.recommendedProductName}</strong>
+        <strong style="color: var(--clr-deep-red); font-size: 0.88rem;">${escapeHTML(recipe.recommendedProductName)}</strong>
       </div>
       <button class="btn btn-primary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;" onclick="handleAddToCart('${recipe.recommendedProductId}', 1); document.getElementById('recipe-detail-modal').classList.remove('active');">
         Add Pack
@@ -820,18 +867,18 @@ function renderReviews() {
   container.innerHTML = REVIEWS_DATA.map(rev => `
     <div class="review-card">
       <div class="review-header">
-        <div class="avatar">${rev.name.charAt(0)}</div>
+        <div class="avatar">${escapeHTML(rev.name.charAt(0))}</div>
         <div class="review-meta">
-          <h4>${rev.name} (${rev.location})</h4>
+          <h4>${escapeHTML(rev.name)} (${escapeHTML(rev.location)})</h4>
           <div class="review-stars">
             ${'<i class="fa-solid fa-star"></i>'.repeat(rev.rating)}
           </div>
         </div>
       </div>
-      <p class="review-text">"${rev.text}"</p>
+      <p class="review-text">"${escapeHTML(rev.text)}"</p>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; font-size: 0.75rem; color: var(--clr-text-muted);">
         <span class="verified-tag"><i class="fa-solid fa-circle-check"></i> Verified Customer</span>
-        <span>${rev.date}</span>
+        <span>${escapeHTML(rev.date)}</span>
       </div>
     </div>
   `).join('');
@@ -856,7 +903,7 @@ function showToast(message, type = 'info') {
   if (type === 'success') icon = 'fa-solid fa-circle-check';
   if (type === 'error') icon = 'fa-solid fa-circle-exclamation';
 
-  toast.innerHTML = `<i class="${icon}" style="font-size: 1.1rem;"></i> <span>${message}</span>`;
+  toast.innerHTML = `<i class="${icon}" style="font-size: 1.1rem;"></i> <span>${escapeHTML(message)}</span>`;
   toastContainer.appendChild(toast);
 
   setTimeout(() => {

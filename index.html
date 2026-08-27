@@ -2,18 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- Mobile App Viewport Meta Tags -->
+  <!-- Production Mobile App & PWA Viewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#7A0914">
+  <meta name="robots" content="index, follow">
   <link rel="manifest" href="manifest.json">
 
-  <title>Mirchi Pure | Mobile Spice Store</title>
+  <title>Mirchi Pure | Homemade Chilli Powder</title>
 
   <!-- SEO Meta Tags -->
-  <meta name="description" content="Buy 100% pure freshly prepared homemade red chilli powder (Mirchi Powder). Handpicked Guntur & Byadgi chillies, cold-ground hygienically, packed fresh.">
+  <meta name="description" content="100% pure freshly prepared homemade red chilli powder (Mirchi Powder). Handpicked Guntur & Byadgi chillies, cold-ground hygienically, packed fresh.">
 
   <!-- FontAwesome 6 Icons CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,21 +25,13 @@
   <!-- Canvas Confetti for Order Celebrations -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-  <!-- Stylesheets -->
+  <!-- Production Stylesheets -->
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/shop.css">
   <link rel="stylesheet" href="css/admin.css">
 </head>
-<body class="mode-device-preview">
-
-  <!-- Floating Mobile Frame View Switcher (Desktop Preview Control) -->
-  <div class="device-toggle-bar">
-    <i class="fa-solid fa-mobile-screen"></i>
-    <span>View Mode:</span>
-    <button class="device-toggle-btn active" id="btn-view-phone" onclick="setDeviceView('phone')">Phone App</button>
-    <button class="device-toggle-btn" id="btn-view-full" onclick="setDeviceView('full')">Full View</button>
-  </div>
+<body>
 
   <!-- MAIN MOBILE APP SHELL CONTAINER -->
   <div class="mobile-app-wrapper" id="app-shell">
@@ -49,7 +42,7 @@
         <i class="fa-solid fa-mobile-button text-gold" style="margin-right: 0.4rem;"></i>
         <span>Install <strong>Mirchi Pure Mobile App</strong></span>
       </div>
-      <button style="background: var(--clr-gold); color: #1C1917; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.72rem;" onclick="showToast('App ready to add to home screen!', 'success'); document.getElementById('app-install-bar').style.display='none';">
+      <button style="background: var(--clr-gold); color: #1C1917; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.72rem;" onclick="showToast('App ready to add to home screen!', 'success'); document.getElementById('app-install-bar').style.display='none';" aria-label="Install App">
         Install
       </button>
     </div>
@@ -69,7 +62,7 @@
       <div class="app-header-inner">
         
         <!-- Brand Logo -->
-        <a href="#home" class="brand-logo">
+        <a href="#home" class="brand-logo" aria-label="Mirchi Pure Home">
           <div class="brand-icon">
             <i class="fa-solid fa-pepper-hot"></i>
           </div>
@@ -81,15 +74,15 @@
 
         <!-- Header Actions -->
         <div class="header-actions">
-          <button class="mode-switch-btn" data-action="toggle-admin-mode" title="Store Owner Portal">
+          <button class="mode-switch-btn" data-action="toggle-admin-mode" aria-label="Toggle Owner Admin Portal">
             <i class="fa-solid fa-user-gear"></i> Admin
           </button>
 
-          <button class="icon-btn" data-action="open-tracker" title="Track Order">
+          <button class="icon-btn" data-action="open-tracker" aria-label="Track Order Status">
             <i class="fa-solid fa-truck-fast"></i>
           </button>
 
-          <button class="icon-btn" data-action="open-cart" title="Shopping Cart">
+          <button class="icon-btn" data-action="open-cart" aria-label="Open Shopping Cart">
             <i class="fa-solid fa-basket-shopping"></i>
             <span class="badge-count cart-count">0</span>
           </button>
@@ -97,10 +90,8 @@
       </div>
     </header>
 
-    <!-- ==========================================================================
-         STOREFRONT VIEW
-         ========================================================================== -->
-    <div id="store-view">
+    <!-- MAIN STOREFRONT CONTAINER -->
+    <main id="store-view">
       
       <!-- HERO SECTION -->
       <section id="home" class="hero-section">
@@ -151,7 +142,7 @@
           </div>
 
           <div class="hero-img-card">
-            <img src="assets/images/hero_chilli_pack.jpg" alt="Mirchi Pure Packaged Powder" />
+            <img src="assets/images/hero_chilli_pack.jpg" alt="Mirchi Pure Packaged Powder" loading="lazy" decoding="async" onerror="this.src='assets/images/hero_chilli_pack.jpg'" />
           </div>
 
         </div>
@@ -196,18 +187,18 @@
 
           <!-- Catalog Filter Controls -->
           <div class="catalog-header">
-            <div class="filter-pills">
-              <button class="filter-pill active" data-category="All">All Flavours</button>
-              <button class="filter-pill" data-category="Classic">Classic</button>
-              <button class="filter-pill" data-category="Fiery Hot">Fiery Hot</button>
-              <button class="filter-pill" data-category="High Colour">High Colour</button>
-              <button class="filter-pill" data-category="Combos">Combos</button>
-              <button class="filter-pill" data-category="Specialty">Specialty</button>
+            <div class="filter-pills" role="tablist" aria-label="Product categories">
+              <button class="filter-pill active" data-category="All" role="tab">All Flavours</button>
+              <button class="filter-pill" data-category="Classic" role="tab">Classic</button>
+              <button class="filter-pill" data-category="Fiery Hot" role="tab">Fiery Hot</button>
+              <button class="filter-pill" data-category="High Colour" role="tab">High Colour</button>
+              <button class="filter-pill" data-category="Combos" role="tab">Combos</button>
+              <button class="filter-pill" data-category="Specialty" role="tab">Specialty</button>
             </div>
 
             <div class="search-box-wrapper">
               <i class="fa-solid fa-magnifying-glass search-icon-inside"></i>
-              <input type="text" id="catalog-search" class="search-input" placeholder="Search chilli powder..." />
+              <input type="text" id="catalog-search" class="search-input" placeholder="Search chilli powder..." aria-label="Search chilli products" />
             </div>
           </div>
 
@@ -284,22 +275,22 @@
 
           <div class="gallery-grid">
             <div class="gallery-item">
-              <img src="assets/images/chilli_drying.jpg" alt="Sun drying chillies" loading="lazy" />
+              <img src="assets/images/chilli_drying.jpg" alt="Sun drying chillies" loading="lazy" decoding="async" />
               <div class="gallery-overlay"><span class="gallery-caption">Sun-Drying</span></div>
             </div>
 
             <div class="gallery-item">
-              <img src="assets/images/grinding_process.jpg" alt="Cold milling process" loading="lazy" />
+              <img src="assets/images/grinding_process.jpg" alt="Cold milling process" loading="lazy" decoding="async" />
               <div class="gallery-overlay"><span class="gallery-caption">Cold Milling</span></div>
             </div>
 
             <div class="gallery-item">
-              <img src="assets/images/chilli_raw_powder.jpg" alt="Mirchi powder" loading="lazy" />
+              <img src="assets/images/chilli_raw_powder.jpg" alt="Mirchi powder" loading="lazy" decoding="async" />
               <div class="gallery-overlay"><span class="gallery-caption">Fine Powder</span></div>
             </div>
 
             <div class="gallery-item">
-              <img src="assets/images/chilli_curry_dish.jpg" alt="Curry dish" loading="lazy" />
+              <img src="assets/images/chilli_curry_dish.jpg" alt="Curry dish" loading="lazy" decoding="async" />
               <div class="gallery-overlay"><span class="gallery-caption">Indian Curry</span></div>
             </div>
           </div>
@@ -367,7 +358,7 @@
       <!-- ABOUT US & BRAND STORY -->
       <section id="about" class="section-padding">
         <div class="container about-grid">
-          <img src="assets/images/hero_chilli_pack.jpg" alt="Mirchi Pure Story" class="about-img-main" />
+          <img src="assets/images/hero_chilli_pack.jpg" alt="Mirchi Pure Story" class="about-img-main" loading="lazy" decoding="async" />
 
           <div>
             <span class="section-subtitle">Our Heritage</span>
@@ -381,7 +372,7 @@
             
             <div style="display: flex; gap: 0.8rem; align-items: center;">
               <a href="#shop" class="btn btn-primary" style="font-size: 0.85rem;">Shop Fresh Batch</a>
-              <button class="btn btn-whatsapp" style="font-size: 0.85rem;" data-action="open-whatsapp-order">
+              <button class="btn btn-whatsapp" style="font-size: 0.85rem;" data-action="open-whatsapp-order" aria-label="Chat with Founder on WhatsApp">
                 <i class="fa-brands fa-whatsapp"></i> Chat Us
               </button>
             </div>
@@ -418,10 +409,10 @@
               </div>
               <p>100% authentic, freshly prepared homemade red chilli powder directly ground from handpicked Guntur chillies.</p>
               <div class="social-links">
-                <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
-                <a href="#" class="social-btn"><i class="fa-brands fa-youtube"></i></a>
-                <a href="https://wa.me/919876543210" target="_blank" class="social-btn"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="#" class="social-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="social-btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" class="social-btn" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://wa.me/919876543210" target="_blank" class="social-btn" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
               </div>
             </div>
 
@@ -443,11 +434,11 @@
       </footer>
 
       <!-- Floating WhatsApp Quick Button -->
-      <a href="#" class="whatsapp-float" data-action="open-whatsapp-order" title="Order via WhatsApp">
+      <a href="#" class="whatsapp-float" data-action="open-whatsapp-order" title="Order via WhatsApp" aria-label="Order via WhatsApp">
         <i class="fa-brands fa-whatsapp"></i>
       </a>
 
-    </div> <!-- END STORE-VIEW -->
+    </main> <!-- END STORE-VIEW -->
 
 
     <!-- ==========================================================================
@@ -462,7 +453,7 @@
         </div>
 
         <div class="admin-nav-actions">
-          <button class="btn btn-gold" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;" data-action="toggle-admin-mode">
+          <button class="btn btn-gold" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;" data-action="toggle-admin-mode" aria-label="Back to Storefront">
             <i class="fa-solid fa-store"></i> Storefront
           </button>
         </div>
@@ -567,28 +558,28 @@
 
 
     <!-- Mobile App Bottom Navigation Bar -->
-    <div class="mobile-bottom-nav">
-      <a href="#home" class="mobile-nav-item active">
+    <nav class="mobile-bottom-nav" aria-label="Mobile Bottom Navigation">
+      <a href="#home" class="mobile-nav-item active" aria-label="Home">
         <i class="fa-solid fa-house"></i>
         <span>Home</span>
       </a>
-      <a href="#shop" class="mobile-nav-item">
+      <a href="#shop" class="mobile-nav-item" aria-label="Shop Catalog">
         <i class="fa-solid fa-pepper-hot"></i>
         <span>Shop</span>
       </a>
-      <a href="#" class="mobile-nav-item" data-action="open-cart">
+      <a href="#" class="mobile-nav-item" data-action="open-cart" aria-label="Shopping Cart">
         <i class="fa-solid fa-basket-shopping"></i>
         <span>Cart (<span class="cart-count">0</span>)</span>
       </a>
-      <a href="#" class="mobile-nav-item" data-action="open-tracker">
+      <a href="#" class="mobile-nav-item" data-action="open-tracker" aria-label="Track Order">
         <i class="fa-solid fa-truck-fast"></i>
         <span>Track</span>
       </a>
-      <a href="#" class="mobile-nav-item" data-action="open-whatsapp-order">
+      <a href="#" class="mobile-nav-item" data-action="open-whatsapp-order" aria-label="WhatsApp Support Chat">
         <i class="fa-brands fa-whatsapp"></i>
         <span>Chat</span>
       </a>
-    </div>
+    </nav>
 
   </div> <!-- END MOBILE-APP-WRAPPER -->
 
@@ -598,14 +589,14 @@
        ========================================================================== -->
 
   <!-- Slide-Over Cart Drawer -->
-  <div class="drawer-backdrop" id="cart-backdrop">
+  <div class="drawer-backdrop" id="cart-backdrop" role="dialog" aria-modal="true" aria-label="Cart Drawer">
     <div class="cart-drawer">
       <div class="drawer-header">
         <div style="display: flex; align-items: center; gap: 0.5rem;">
           <i class="fa-solid fa-basket-shopping text-red"></i>
           <h3 style="font-family: var(--ff-ui); font-size: 1.05rem;">Kitchen Cart</h3>
         </div>
-        <button id="close-cart-drawer"><i class="fa-solid fa-xmark"></i></button>
+        <button id="close-cart-drawer" aria-label="Close Cart"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
       <div class="free-shipping-bar-box">
@@ -621,7 +612,7 @@
 
       <div class="drawer-footer">
         <div style="display: flex; gap: 0.4rem; margin-bottom: 0.8rem;">
-          <input type="text" id="coupon-input" placeholder="Coupon code (e.g. FRESH15)" class="form-control" style="flex: 1; text-transform: uppercase;" />
+          <input type="text" id="coupon-input" placeholder="Coupon code (e.g. FRESH15)" class="form-control" style="flex: 1; text-transform: uppercase;" aria-label="Coupon code input" />
           <button class="btn btn-secondary" id="apply-coupon-btn" style="padding: 0.4rem 0.8rem; font-size: 0.82rem;">Apply</button>
         </div>
 
@@ -650,9 +641,9 @@
   </div>
 
   <!-- Product Detail Modal -->
-  <div class="modal-wrapper" id="product-detail-modal">
+  <div class="modal-wrapper" id="product-detail-modal" role="dialog" aria-modal="true" aria-label="Product Detail">
     <div class="modal-card">
-      <button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      <button class="modal-close-btn" aria-label="Close Product Detail"><i class="fa-solid fa-xmark"></i></button>
       <div id="product-detail-container">
         <!-- Rendered dynamically -->
       </div>
@@ -660,35 +651,35 @@
   </div>
 
   <!-- Multi-Step Checkout Modal -->
-  <div class="modal-wrapper" id="checkout-modal">
+  <div class="modal-wrapper" id="checkout-modal" role="dialog" aria-modal="true" aria-label="Checkout Form">
     <div class="modal-card">
-      <button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      <button class="modal-close-btn" aria-label="Close Checkout"><i class="fa-solid fa-xmark"></i></button>
       <h2 style="font-family: var(--ff-heading); color: var(--clr-deep-red); margin-bottom: 0.3rem; font-size: 1.4rem;">Checkout</h2>
 
       <form id="checkout-form">
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Full Name *</label>
+            <label class="form-label" for="cust-name">Full Name *</label>
             <input type="text" id="cust-name" class="form-control" placeholder="Ramesh Kumar" required />
           </div>
           <div class="form-group">
-            <label class="form-label">Mobile *</label>
+            <label class="form-label" for="cust-phone">10-Digit Mobile Number *</label>
             <input type="tel" id="cust-phone" class="form-control" placeholder="9876543210" required />
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Delivery Address *</label>
+          <label class="form-label" for="cust-address">Delivery Address *</label>
           <input type="text" id="cust-address" class="form-control" placeholder="Flat, Street, Area" required />
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">City *</label>
+            <label class="form-label" for="cust-city">City *</label>
             <input type="text" id="cust-city" class="form-control" placeholder="City" required />
           </div>
           <div class="form-group">
-            <label class="form-label">Pincode *</label>
+            <label class="form-label" for="cust-pincode">6-Digit Pincode *</label>
             <input type="text" id="cust-pincode" class="form-control" placeholder="Pincode" required />
           </div>
         </div>
@@ -726,20 +717,20 @@
   </div>
 
   <!-- Order Success Modal -->
-  <div class="modal-wrapper" id="order-success-modal">
+  <div class="modal-wrapper" id="order-success-modal" role="dialog" aria-modal="true" aria-label="Order Placed Successfully">
     <div class="modal-card" id="order-success-details">
       <!-- Rendered dynamically -->
     </div>
   </div>
 
   <!-- Order Tracking Modal -->
-  <div class="modal-wrapper" id="tracker-modal">
+  <div class="modal-wrapper" id="tracker-modal" role="dialog" aria-modal="true" aria-label="Order Tracking">
     <div class="modal-card">
-      <button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      <button class="modal-close-btn" aria-label="Close Tracker"><i class="fa-solid fa-xmark"></i></button>
       <h2 style="font-family: var(--ff-heading); color: var(--clr-deep-red); margin-bottom: 0.3rem; font-size: 1.3rem;">Track Order</h2>
 
       <form id="tracking-form" style="display: flex; gap: 0.5rem; margin-bottom: 0.8rem;">
-        <input type="text" id="tracker-input" class="form-control" placeholder="Order ID or Phone" style="flex: 1;" required />
+        <input type="text" id="tracker-input" class="form-control" placeholder="Order ID or Phone" style="flex: 1;" required aria-label="Order ID or Mobile Number" />
         <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1rem;">Track</button>
       </form>
 
@@ -750,9 +741,9 @@
   </div>
 
   <!-- WhatsApp Quick Order Modal -->
-  <div class="modal-wrapper" id="whatsapp-modal">
+  <div class="modal-wrapper" id="whatsapp-modal" role="dialog" aria-modal="true" aria-label="WhatsApp Direct Order">
     <div class="modal-card">
-      <button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      <button class="modal-close-btn" aria-label="Close WhatsApp Modal"><i class="fa-solid fa-xmark"></i></button>
       <div style="text-align: center; margin-bottom: 1rem;">
         <i class="fa-brands fa-whatsapp text-green" style="font-size: 2.5rem;"></i>
         <h3 style="color: var(--clr-heading-dark); margin-top: 0.3rem;">WhatsApp Order</h3>
@@ -769,32 +760,13 @@
   </div>
 
   <!-- Recipe Detail Modal -->
-  <div class="modal-wrapper" id="recipe-detail-modal">
+  <div class="modal-wrapper" id="recipe-detail-modal" role="dialog" aria-modal="true" aria-label="Recipe Details">
     <div class="modal-card" id="recipe-modal-container">
       <!-- Rendered dynamically -->
     </div>
   </div>
 
-  <!-- Desktop Preview Toggle Handler Script -->
-  <script>
-    function setDeviceView(mode) {
-      const body = document.body;
-      const btnPhone = document.getElementById('btn-view-phone');
-      const btnFull = document.getElementById('btn-view-full');
-
-      if (mode === 'phone') {
-        body.classList.add('mode-device-preview');
-        if (btnPhone) btnPhone.classList.add('active');
-        if (btnFull) btnFull.classList.remove('active');
-      } else {
-        body.classList.remove('mode-device-preview');
-        if (btnPhone) btnPhone.classList.remove('active');
-        if (btnFull) btnFull.classList.add('active');
-      }
-    }
-  </script>
-
-  <!-- Application Scripts -->
+  <!-- Production Application Scripts -->
   <script src="js/data.js"></script>
   <script src="js/store.js"></script>
   <script src="js/app.js"></script>
