@@ -1,0 +1,224 @@
+/* ==========================================================================
+   MIRCHI PURE - ADMIN DASHBOARD STYLES
+   KPI Cards, Order Tables, Product Manager, Coupon Controls
+   ========================================================================== */
+
+.admin-portal-wrapper {
+  display: none; /* Hidden by default until toggled */
+  min-height: 100vh;
+  background-color: #F3F4F6;
+  color: #1F2937;
+  font-family: var(--ff-ui);
+}
+
+.admin-portal-wrapper.active {
+  display: block;
+}
+
+.admin-nav {
+  background: var(--clr-dark-charcoal);
+  color: #FFF;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3px solid var(--clr-chilli-red);
+}
+
+.admin-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: var(--ff-heading);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.admin-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-body {
+  padding: 2.5rem;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.admin-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.admin-title {
+  font-family: var(--ff-heading);
+  font-size: 2rem;
+  color: var(--clr-dark-charcoal);
+}
+
+/* KPI Summary Cards Grid */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.kpi-card {
+  background: #FFF;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-top: 4px solid var(--clr-chilli-red);
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi-card.sales { border-top-color: #10B981; }
+.kpi-card.orders { border-top-color: #3B82F6; }
+.kpi-card.pending { border-top-color: #F59E0B; }
+.kpi-card.completed { border-top-color: #8B5CF6; }
+.kpi-card.stock { border-top-color: #EF4444; }
+
+.kpi-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.kpi-value {
+  font-family: var(--ff-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+.kpi-sub {
+  font-size: 0.8rem;
+  color: #9CA3AF;
+  margin-top: 0.3rem;
+}
+
+/* Admin Tabs */
+.admin-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 2px solid #E5E7EB;
+  margin-bottom: 2rem;
+}
+
+.admin-tab-btn {
+  padding: 0.75rem 1.5rem;
+  font-family: var(--ff-ui);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #4B5563;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  background: transparent;
+}
+
+.admin-tab-btn.active {
+  color: var(--clr-chilli-red);
+  border-bottom-color: var(--clr-chilli-red);
+  background: #FFF;
+  border-radius: 8px 8px 0 0;
+}
+
+.admin-section-panel {
+  display: none;
+}
+
+.admin-section-panel.active {
+  display: block;
+}
+
+/* Charts & Data Cards */
+.admin-card-box {
+  background: #FFF;
+  border-radius: var(--radius-lg);
+  padding: 1.8rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.admin-card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  color: #111827;
+}
+
+.chart-canvas-wrapper {
+  position: relative;
+  height: 320px;
+  width: 100%;
+}
+
+/* Admin Data Tables */
+.admin-table-container {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.admin-table th {
+  background: #F9FAFB;
+  padding: 0.9rem 1rem;
+  font-weight: 700;
+  color: #374151;
+  border-bottom: 2px solid #E5E7EB;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.admin-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #E5E7EB;
+  vertical-align: middle;
+}
+
+.admin-table tr:hover {
+  background-color: #F9FAFB;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.status-badge.pending { background: #FEF3C7; color: #D97706; }
+.status-badge.processing { background: #DBEAFE; color: #2563EB; }
+.status-badge.shipped { background: #E0E7FF; color: #4F46E5; }
+.status-badge.delivered { background: #D1FAE5; color: #059669; }
+
+.status-select {
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #D1D5DB;
+  font-family: var(--ff-ui);
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.btn-admin-sm {
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
