@@ -238,11 +238,11 @@ function renderProducts(categoryFilter = 'All', searchFilter = '') {
           </div>
 
           <div class="product-card-actions">
-            <button class="btn btn-secondary" style="padding: 0.65rem 0.8rem; font-size: 0.88rem;"
+            <button class="btn btn-secondary" style="padding: 0.6rem 0.6rem; font-size: 0.82rem;"
               onclick="handleAddToCart('${product.id}', ${activeVarIdx})">
               <i class="fa-solid fa-basket-shopping"></i> Add to Cart
             </button>
-            <button class="btn btn-primary" style="padding: 0.65rem 0.8rem; font-size: 0.88rem;"
+            <button class="btn btn-primary" style="padding: 0.6rem 0.6rem; font-size: 0.82rem;"
               onclick="handleBuyNow('${product.id}', ${activeVarIdx})">
               Buy Now
             </button>
@@ -297,24 +297,24 @@ window.openProductDetailModal = function(productId) {
 
     container.innerHTML = `
       <div class="product-detail-grid">
-        <div style="border-radius: var(--radius-lg); overflow: hidden; height: 380px; box-shadow: var(--shadow-md);">
+        <div style="border-radius: var(--radius-lg); overflow: hidden; height: 260px; box-shadow: var(--shadow-md);">
           <img src="${product.image}" alt="${product.name}" style="width:100%; height:100%; object-fit:cover;" />
         </div>
 
         <div>
-          <span class="badge badge-red" style="margin-bottom: 0.8rem;">${product.category}</span>
-          <h2 style="font-family: var(--ff-heading); margin-bottom: 0.5rem; color: var(--clr-deep-red);">${product.name}</h2>
+          <span class="badge badge-red" style="margin-bottom: 0.6rem;">${product.category}</span>
+          <h2 style="font-family: var(--ff-heading); margin-bottom: 0.4rem; color: var(--clr-deep-red);">${product.name}</h2>
           
-          <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem;">
-            <div style="color: #FFC107; font-size: 0.9rem;">
-              <i class="fa-solid fa-star"></i> ${product.rating} (${product.reviewsCount} Verified Reviews)
+          <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem;">
+            <div style="color: #FFC107; font-size: 0.85rem;">
+              <i class="fa-solid fa-star"></i> ${product.rating} (${product.reviewsCount} Reviews)
             </div>
             <span class="badge badge-green">${product.spiceText}</span>
           </div>
 
-          <p style="color: var(--clr-text-body); margin-bottom: 1.5rem;">${product.description}</p>
+          <p style="color: var(--clr-text-body); margin-bottom: 1.2rem; font-size: 0.88rem;">${product.description}</p>
 
-          <div style="margin-bottom: 1.2rem;">
+          <div style="margin-bottom: 1rem;">
             <div class="weight-selector-label">Available Weights:</div>
             <div class="weight-pills">
               ${product.variants.map((v, idx) => `
@@ -326,27 +326,26 @@ window.openProductDetailModal = function(productId) {
             </div>
           </div>
 
-          <div class="price-row" style="margin-bottom: 1.8rem;">
-            <span class="current-price" style="font-size: 2rem;">₹${variant.price}</span>
-            ${variant.originalPrice ? `<span class="original-price" style="font-size: 1.2rem;">₹${variant.originalPrice}</span>` : ''}
-            <span style="font-size: 0.85rem; color: var(--clr-dark-green); font-weight: 600;">(Inclusive of all taxes)</span>
+          <div class="price-row" style="margin-bottom: 1.4rem;">
+            <span class="current-price" style="font-size: 1.6rem;">₹${variant.price}</span>
+            ${variant.originalPrice ? `<span class="original-price" style="font-size: 1rem;">₹${variant.originalPrice}</span>` : ''}
           </div>
 
-          <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
-            <button class="btn btn-primary" style="flex: 1;" id="modal-add-cart-btn">
+          <div style="display: flex; gap: 0.8rem; margin-bottom: 1.5rem;">
+            <button class="btn btn-primary" style="flex: 1; font-size: 0.88rem;" id="modal-add-cart-btn">
               <i class="fa-solid fa-basket-shopping"></i> Add to Cart
             </button>
-            <button class="btn btn-gold" style="flex: 1;" id="modal-buy-now-btn">
+            <button class="btn btn-gold" style="flex: 1; font-size: 0.88rem;" id="modal-buy-now-btn">
               Buy Now
             </button>
           </div>
 
           <!-- Trust bullets -->
-          <div style="background: var(--clr-cream-bg); padding: 1rem; border-radius: var(--radius-md); font-size: 0.85rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
-            <div><i class="fa-solid fa-circle-check text-green"></i> 100% Quality Chilli</div>
-            <div><i class="fa-solid fa-circle-check text-green"></i> Hygienically Prepared</div>
+          <div style="background: var(--clr-cream-bg); padding: 0.8rem; border-radius: var(--radius-md); font-size: 0.8rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;">
+            <div><i class="fa-solid fa-circle-check text-green"></i> 100% Quality</div>
+            <div><i class="fa-solid fa-circle-check text-green"></i> Hygienic Mill</div>
             <div><i class="fa-solid fa-circle-check text-green"></i> Freshly Packed</div>
-            <div><i class="fa-solid fa-circle-check text-green"></i> Authentic Indian Taste</div>
+            <div><i class="fa-solid fa-circle-check text-green"></i> Authentic Taste</div>
           </div>
         </div>
       </div>
@@ -359,9 +358,9 @@ window.openProductDetailModal = function(productId) {
       </div>
 
       <div class="tab-content-panel active" id="tab-love">
-        <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.6rem;">
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem;">
           ${product.whyYouLoveIt.map(item => `
-            <li style="display: flex; align-items: center; gap: 0.6rem;">
+            <li style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
               <i class="fa-solid fa-pepper-hot text-red"></i> <span>${item}</span>
             </li>
           `).join('')}
@@ -370,13 +369,13 @@ window.openProductDetailModal = function(productId) {
 
       <div class="tab-content-panel" id="tab-prep">
         <p><strong>Ingredients:</strong> ${product.ingredients}</p>
-        <p style="margin-top: 0.6rem;"><strong>Preparation Process:</strong> ${product.prepProcess}</p>
+        <p style="margin-top: 0.4rem;"><strong>Preparation:</strong> ${product.prepProcess}</p>
       </div>
 
       <div class="tab-content-panel" id="tab-storage">
         <p><strong>Packaging:</strong> ${product.packaging}</p>
-        <p style="margin-top: 0.6rem;"><strong>Storage Instructions:</strong> ${product.storage}</p>
-        <p style="margin-top: 0.6rem;"><strong>Shelf Life:</strong> ${product.shelfLife}</p>
+        <p style="margin-top: 0.4rem;"><strong>Storage:</strong> ${product.storage}</p>
+        <p style="margin-top: 0.4rem;"><strong>Shelf Life:</strong> ${product.shelfLife}</p>
       </div>
     `;
 
@@ -465,20 +464,20 @@ function updateCartUI() {
   const threshold = 499;
   if (subtotal >= threshold || (store.appliedCoupon && store.appliedCoupon.freeShipping)) {
     if (freeShipBar) freeShipBar.style.width = '100%';
-    if (freeShipText) freeShipText.innerHTML = `🎉 You unlocked <strong>FREE Doorstep Delivery!</strong>`;
+    if (freeShipText) freeShipText.innerHTML = `🎉 You unlocked <strong>FREE Delivery!</strong>`;
   } else {
     const diff = threshold - subtotal;
     const pct = Math.min(100, Math.round((subtotal / threshold) * 100));
     if (freeShipBar) freeShipBar.style.width = `${pct}%`;
-    if (freeShipText) freeShipText.innerHTML = `Add <strong>₹${diff}</strong> more to get FREE Doorstep Delivery!`;
+    if (freeShipText) freeShipText.innerHTML = `Add <strong>₹${diff}</strong> more for FREE Delivery!`;
   }
 
   if (store.cart.length === 0) {
     container.innerHTML = `
-      <div style="text-align: center; padding: 3rem 1rem; color: var(--clr-text-muted);">
-        <i class="fa-solid fa-basket-shopping" style="font-size: 3.5rem; margin-bottom: 1rem; color: var(--clr-border);"></i>
+      <div style="text-align: center; padding: 2.5rem 1rem; color: var(--clr-text-muted);">
+        <i class="fa-solid fa-basket-shopping" style="font-size: 3rem; margin-bottom: 0.8rem; color: var(--clr-border);"></i>
         <h4>Your Cart is Empty</h4>
-        <p style="font-size: 0.9rem; margin-top: 0.4rem;">Explore our freshly prepared chilli powders and stock up your kitchen!</p>
+        <p style="font-size: 0.85rem; margin-top: 0.3rem;">Explore our freshly prepared chilli powders and stock up your kitchen!</p>
       </div>
     `;
   } else {
@@ -491,14 +490,14 @@ function updateCartUI() {
               <span class="cart-item-title">${item.name}</span>
               <div class="cart-item-meta">Pack: ${item.weight}</div>
             </div>
-            <button onclick="store.removeFromCart(${idx})" style="color: var(--clr-text-muted); font-size: 1rem;">
+            <button onclick="store.removeFromCart(${idx})" style="color: var(--clr-text-muted); font-size: 0.9rem;">
               <i class="fa-solid fa-trash-can"></i>
             </button>
           </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.4rem;">
             <div class="qty-controls">
               <button class="qty-btn" onclick="store.updateCartQty(${idx}, ${item.qty - 1})">-</button>
-              <span style="font-size: 0.9rem; font-weight: 700; width: 20px; text-align: center;">${item.qty}</span>
+              <span style="font-size: 0.85rem; font-weight: 700; width: 18px; text-align: center;">${item.qty}</span>
               <button class="qty-btn" onclick="store.updateCartQty(${idx}, ${item.qty + 1})">+</button>
             </div>
             <span class="cart-item-price">₹${item.price * item.qty}</span>
@@ -533,12 +532,12 @@ function openCheckoutModal() {
 
   if (summaryEl) {
     summaryEl.innerHTML = store.cart.map(item => `
-      <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.4rem;">
+      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.3rem;">
         <span>${item.name} (${item.weight}) x${item.qty}</span>
         <strong>₹${item.price * item.qty}</strong>
       </div>
     `).join('') + `
-      <div style="border-top: 1px dashed var(--clr-border); padding-top: 0.6rem; margin-top: 0.6rem; display: flex; justify-content: space-between; font-weight: 800; color: var(--clr-deep-red); font-size: 1.1rem;">
+      <div style="border-top: 1px dashed var(--clr-border); padding-top: 0.5rem; margin-top: 0.5rem; display: flex; justify-content: space-between; font-weight: 800; color: var(--clr-deep-red); font-size: 1rem;">
         <span>Total Payable</span>
         <span>₹${store.getCartTotal()}</span>
       </div>
@@ -549,16 +548,18 @@ function openCheckoutModal() {
 }
 
 function handleOrderSubmit() {
-  const name = document.getElementById('cust-name').value;
-  const phone = document.getElementById('cust-phone').value;
-  const email = document.getElementById('cust-email').value;
-  const address = document.getElementById('cust-address').value;
-  const city = document.getElementById('cust-city').value;
-  const pincode = document.getElementById('cust-pincode').value;
-  const paymentMode = document.querySelector('input[name="payment-mode"]:checked').value;
+  const name = document.getElementById('cust-name')?.value || '';
+  const phone = document.getElementById('cust-phone')?.value || '';
+  const emailInput = document.getElementById('cust-email');
+  const email = emailInput ? emailInput.value : 'N/A';
+  const address = document.getElementById('cust-address')?.value || '';
+  const city = document.getElementById('cust-city')?.value || '';
+  const pincode = document.getElementById('cust-pincode')?.value || '';
+  const paymentModeInput = document.querySelector('input[name="payment-mode"]:checked');
+  const paymentMode = paymentModeInput ? paymentModeInput.value : 'Cash on Delivery';
 
   if (!name || !phone || !address || !city || !pincode) {
-    showToast("Please fill in all mandatory address fields.", "error");
+    showToast("Please fill in mandatory address fields.", "error");
     return;
   }
 
@@ -571,7 +572,7 @@ function handleOrderSubmit() {
 
   // Trigger celebration confetti if canvas script exists
   if (window.confetti) {
-    window.confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+    window.confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
   }
 
   // Open Order Success Modal
@@ -584,27 +585,27 @@ function openOrderSuccessModal(order) {
   if (!modal || !detailsContainer) return;
 
   detailsContainer.innerHTML = `
-    <div style="text-align: center; margin-bottom: 1.5rem;">
-      <div style="width: 70px; height: 70px; background: #E8F5E9; color: var(--clr-dark-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 1rem;">
+    <div style="text-align: center; margin-bottom: 1.2rem;">
+      <div style="width: 60px; height: 60px; background: #E8F5E9; color: var(--clr-dark-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 0.8rem;">
         <i class="fa-solid fa-circle-check"></i>
       </div>
-      <h2 style="color: var(--clr-deep-red); margin-bottom: 0.3rem;">Order Placed Successfully!</h2>
-      <p style="font-size: 0.95rem;">Order Reference ID: <strong style="color: var(--clr-chilli-red); font-size: 1.1rem;">${order.orderId}</strong></p>
+      <h3 style="color: var(--clr-deep-red); margin-bottom: 0.2rem; font-size: 1.3rem;">Order Placed!</h3>
+      <p style="font-size: 0.88rem;">Order ID: <strong style="color: var(--clr-chilli-red); font-size: 1rem;">${order.orderId}</strong></p>
     </div>
 
-    <div style="background: var(--clr-cream-bg); border-radius: var(--radius-md); padding: 1.2rem; margin-bottom: 1.5rem; font-size: 0.9rem;">
+    <div style="background: var(--clr-cream-bg); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.2rem; font-size: 0.85rem;">
       <p><strong>Customer:</strong> ${order.customerName} (${order.phone})</p>
-      <p style="margin-top: 0.4rem;"><strong>Delivery Address:</strong> ${order.address}</p>
-      <p style="margin-top: 0.4rem;"><strong>Payment Mode:</strong> ${order.paymentMode} (${order.paymentStatus})</p>
-      <p style="margin-top: 0.4rem;"><strong>Total Paid:</strong> ₹${order.totalAmount}</p>
+      <p style="margin-top: 0.3rem;"><strong>Address:</strong> ${order.address}</p>
+      <p style="margin-top: 0.3rem;"><strong>Payment:</strong> ${order.paymentMode} (${order.paymentStatus})</p>
+      <p style="margin-top: 0.3rem;"><strong>Total Paid:</strong> ₹${order.totalAmount}</p>
     </div>
 
-    <div style="display: flex; gap: 1rem;">
-      <button class="btn btn-primary" style="flex: 1;" onclick="openTrackerModalWithId('${order.orderId}')">
-        <i class="fa-solid fa-truck-fast"></i> Track Order Status
+    <div style="display: flex; gap: 0.8rem;">
+      <button class="btn btn-primary" style="flex: 1; font-size: 0.85rem;" onclick="openTrackerModalWithId('${order.orderId}')">
+        <i class="fa-solid fa-truck-fast"></i> Track Order
       </button>
-      <button class="btn btn-secondary" style="flex: 1;" onclick="document.getElementById('order-success-modal').classList.remove('active')">
-        Continue Shopping
+      <button class="btn btn-secondary" style="flex: 1; font-size: 0.85rem;" onclick="document.getElementById('order-success-modal').classList.remove('active')">
+        Continue
       </button>
     </div>
   `;
@@ -640,43 +641,43 @@ function handleTrackingSearch() {
 
   if (!order) {
     resultBox.innerHTML = `
-      <div style="text-align: center; padding: 2rem; color: var(--clr-chilli-red);">
-        <i class="fa-solid fa-circle-exclamation" style="font-size: 2.5rem;"></i>
-        <h4 style="margin-top: 0.5rem;">Order Not Found</h4>
-        <p style="font-size: 0.88rem; color: var(--clr-text-muted);">Please check your Order ID (e.g., MRC-84920) or Phone number.</p>
+      <div style="text-align: center; padding: 1.5rem; color: var(--clr-chilli-red);">
+        <i class="fa-solid fa-circle-exclamation" style="font-size: 2rem;"></i>
+        <h4 style="margin-top: 0.4rem; font-size: 0.95rem;">Order Not Found</h4>
+        <p style="font-size: 0.82rem; color: var(--clr-text-muted);">Please check your Order ID (e.g., MRC-84920) or Phone number.</p>
       </div>
     `;
     return;
   }
 
   resultBox.innerHTML = `
-    <div style="background: #FFF; border: 1px solid var(--clr-border); border-radius: var(--radius-md); padding: 1.2rem; margin-top: 1rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--clr-border-light); padding-bottom: 0.8rem; margin-bottom: 1rem;">
+    <div style="background: #FFF; border: 1px solid var(--clr-border); border-radius: var(--radius-md); padding: 1rem; margin-top: 0.8rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--clr-border-light); padding-bottom: 0.6rem; margin-bottom: 0.8rem;">
         <div>
-          <h4 style="color: var(--clr-deep-red);">Order ID: ${order.orderId}</h4>
-          <span style="font-size: 0.8rem; color: var(--clr-text-muted);">Placed on: ${order.date}</span>
+          <h4 style="color: var(--clr-deep-red); font-size: 0.95rem;">Order ID: ${order.orderId}</h4>
+          <span style="font-size: 0.75rem; color: var(--clr-text-muted);">${order.date}</span>
         </div>
-        <span class="badge ${order.orderStatus === 'Delivered' ? 'badge-green' : 'badge-gold'}">
+        <span class="badge ${order.orderStatus === 'Delivered' ? 'badge-green' : 'badge-gold'}" style="font-size: 0.7rem;">
           ${order.orderStatus}
         </span>
       </div>
 
-      <div style="margin-bottom: 1rem; font-size: 0.88rem;">
+      <div style="margin-bottom: 0.8rem; font-size: 0.82rem;">
         <strong>Items Ordered:</strong>
-        <ul style="list-style: none; margin-top: 0.4rem; color: var(--clr-text-body);">
+        <ul style="list-style: none; margin-top: 0.3rem; color: var(--clr-text-body);">
           ${order.items.map(i => `<li>• ${i.name} x${i.qty} - ₹${i.price * i.qty}</li>`).join('')}
         </ul>
       </div>
 
       <!-- Tracking Steps Visual Line -->
-      <div style="position: relative; padding-left: 1.5rem; border-left: 3px solid var(--clr-border); display: flex; flex-direction: column; gap: 1.2rem;">
+      <div style="position: relative; padding-left: 1.2rem; border-left: 2px solid var(--clr-border); display: flex; flex-direction: column; gap: 0.9rem;">
         ${order.trackingSteps.map(s => `
           <div style="position: relative;">
-            <div style="position: absolute; left: -1.95rem; top: 0; width: 16px; height: 16px; border-radius: 50%; background: ${s.done ? 'var(--clr-chilli-red)' : 'var(--clr-border)'}; border: 3px solid #FFF;"></div>
-            <div style="font-family: var(--ff-ui); font-weight: ${s.done ? '700' : '500'}; font-size: 0.9rem; color: ${s.done ? 'var(--clr-heading-dark)' : 'var(--clr-text-muted)'};">
+            <div style="position: absolute; left: -1.55rem; top: 0; width: 12px; height: 12px; border-radius: 50%; background: ${s.done ? 'var(--clr-chilli-red)' : 'var(--clr-border)'}; border: 2px solid #FFF;"></div>
+            <div style="font-family: var(--ff-ui); font-weight: ${s.done ? '700' : '500'}; font-size: 0.82rem; color: ${s.done ? 'var(--clr-heading-dark)' : 'var(--clr-text-muted)'};">
               ${s.step}
             </div>
-            <div style="font-size: 0.78rem; color: var(--clr-text-muted);">${s.time}</div>
+            <div style="font-size: 0.72rem; color: var(--clr-text-muted);">${s.time}</div>
           </div>
         `).join('')}
       </div>
@@ -752,11 +753,11 @@ function renderRecipes() {
         <p class="recipe-desc">${r.desc}</p>
 
         <div class="recipe-card-footer">
-          <button class="btn btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.82rem;"
+          <button class="btn btn-secondary" style="padding: 0.35rem 0.7rem; font-size: 0.78rem;"
             onclick="openRecipeDetailModal('${r.id}')">
-            View Recipe
+            Recipe
           </button>
-          <button class="btn btn-primary" style="padding: 0.45rem 0.9rem; font-size: 0.82rem;"
+          <button class="btn btn-primary" style="padding: 0.35rem 0.7rem; font-size: 0.78rem;"
             onclick="handleAddToCart('${r.recommendedProductId}', 1)">
             <i class="fa-solid fa-plus"></i> Buy Mirchi
           </button>
@@ -775,36 +776,36 @@ window.openRecipeDetailModal = function(recipeId) {
   if (!modal || !container) return;
 
   container.innerHTML = `
-    <h2 style="font-family: var(--ff-heading); color: var(--clr-deep-red); margin-bottom: 0.5rem;">${recipe.title}</h2>
-    <div style="display: flex; gap: 1rem; font-size: 0.88rem; color: var(--clr-text-muted); margin-bottom: 1.2rem;">
+    <h3 style="font-family: var(--ff-heading); color: var(--clr-deep-red); margin-bottom: 0.3rem;">${recipe.title}</h3>
+    <div style="font-size: 0.8rem; color: var(--clr-text-muted); margin-bottom: 1rem;">
       <span>Category: ${recipe.category}</span> | <span>Prep Time: ${recipe.prepTime}</span>
     </div>
     
-    <div style="height: 240px; border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1.5rem;">
+    <div style="height: 180px; border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1rem;">
       <img src="${recipe.image}" alt="${recipe.title}" style="width:100%; height:100%; object-fit:cover;" />
     </div>
 
-    <div style="margin-bottom: 1.5rem;">
-      <h4 style="color: var(--clr-heading-dark); margin-bottom: 0.6rem;">Key Ingredients:</h4>
-      <ul style="list-style: disc; padding-left: 1.2rem; font-size: 0.92rem;">
+    <div style="margin-bottom: 1rem;">
+      <h4 style="color: var(--clr-heading-dark); margin-bottom: 0.4rem; font-size: 0.9rem;">Key Ingredients:</h4>
+      <ul style="list-style: disc; padding-left: 1rem; font-size: 0.85rem;">
         ${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}
       </ul>
     </div>
 
-    <div style="margin-bottom: 1.8rem;">
-      <h4 style="color: var(--clr-heading-dark); margin-bottom: 0.6rem;">Preparation Method:</h4>
-      <ol style="padding-left: 1.2rem; font-size: 0.92rem; display: flex; flex-direction: column; gap: 0.5rem;">
+    <div style="margin-bottom: 1.2rem;">
+      <h4 style="color: var(--clr-heading-dark); margin-bottom: 0.4rem; font-size: 0.9rem;">Preparation Method:</h4>
+      <ol style="padding-left: 1rem; font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem;">
         ${recipe.steps.map(s => `<li>${s}</li>`).join('')}
       </ol>
     </div>
 
-    <div style="background: linear-gradient(135deg, #FFF6E8, #FFEDD5); border: 1px solid var(--clr-gold); border-radius: var(--radius-md); padding: 1.2rem; display: flex; align-items: center; justify-content: space-between;">
+    <div style="background: linear-gradient(135deg, #FFF6E8, #FFEDD5); border: 1px solid var(--clr-gold); border-radius: var(--radius-md); padding: 0.8rem; display: flex; align-items: center; justify-content: space-between;">
       <div>
-        <div style="font-size: 0.8rem; font-weight: 700; color: var(--clr-amber-spice); text-transform: uppercase;">Recommended Chilli Powder:</div>
-        <strong style="color: var(--clr-deep-red); font-size: 1rem;">${recipe.recommendedProductName}</strong>
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--clr-amber-spice); text-transform: uppercase;">Recommended Pack:</div>
+        <strong style="color: var(--clr-deep-red); font-size: 0.88rem;">${recipe.recommendedProductName}</strong>
       </div>
-      <button class="btn btn-primary" onclick="handleAddToCart('${recipe.recommendedProductId}', 1); document.getElementById('recipe-detail-modal').classList.remove('active');">
-        Add Pack to Cart
+      <button class="btn btn-primary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;" onclick="handleAddToCart('${recipe.recommendedProductId}', 1); document.getElementById('recipe-detail-modal').classList.remove('active');">
+        Add Pack
       </button>
     </div>
   `;
@@ -828,7 +829,7 @@ function renderReviews() {
         </div>
       </div>
       <p class="review-text">"${rev.text}"</p>
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; font-size: 0.8rem; color: var(--clr-text-muted);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; font-size: 0.75rem; color: var(--clr-text-muted);">
         <span class="verified-tag"><i class="fa-solid fa-circle-check"></i> Verified Customer</span>
         <span>${rev.date}</span>
       </div>
@@ -855,10 +856,10 @@ function showToast(message, type = 'info') {
   if (type === 'success') icon = 'fa-solid fa-circle-check';
   if (type === 'error') icon = 'fa-solid fa-circle-exclamation';
 
-  toast.innerHTML = `<i class="${icon}" style="font-size: 1.2rem;"></i> <span>${message}</span>`;
+  toast.innerHTML = `<i class="${icon}" style="font-size: 1.1rem;"></i> <span>${message}</span>`;
   toastContainer.appendChild(toast);
 
   setTimeout(() => {
     toast.remove();
-  }, 3200);
+  }, 3000);
 }

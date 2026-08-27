@@ -2,12 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mirchi Pure | Pure Chilli. Authentic Taste. | Homemade Red Chilli Powder</title>
-  
+  <!-- Mobile App Viewport Meta Tags -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#7A0914">
+  <link rel="manifest" href="manifest.json">
+
+  <title>Mirchi Pure | Mobile Spice Store</title>
+
   <!-- SEO Meta Tags -->
-  <meta name="description" content="Buy 100% pure freshly prepared homemade red chilli powder (Mirchi Powder). Handpicked Guntur & Byadgi chillies, cold-ground hygienically, packed fresh directly from traditional spice masters.">
-  <meta name="keywords" content="Mirchi powder, homemade chilli powder, pure red chilli powder, Guntur chilli powder, Byadgi chilli, authentic Indian spices, spice delivery">
+  <meta name="description" content="Buy 100% pure freshly prepared homemade red chilli powder (Mirchi Powder). Handpicked Guntur & Byadgi chillies, cold-ground hygienically, packed fresh.">
 
   <!-- FontAwesome 6 Icons CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,34 +30,43 @@
   <link rel="stylesheet" href="css/shop.css">
   <link rel="stylesheet" href="css/admin.css">
 </head>
-<body>
+<body class="mode-device-preview">
 
-  <!-- ==========================================================================
-       STOREFRONT VIEW
-       ========================================================================== -->
-  <div id="store-view">
-    
-    <!-- Top Announcement Bar -->
+  <!-- Floating Mobile Frame View Switcher (Desktop Preview Control) -->
+  <div class="device-toggle-bar">
+    <i class="fa-solid fa-mobile-screen"></i>
+    <span>View Mode:</span>
+    <button class="device-toggle-btn active" id="btn-view-phone" onclick="setDeviceView('phone')">Phone App</button>
+    <button class="device-toggle-btn" id="btn-view-full" onclick="setDeviceView('full')">Full View</button>
+  </div>
+
+  <!-- MAIN MOBILE APP SHELL CONTAINER -->
+  <div class="mobile-app-wrapper" id="app-shell">
+
+    <!-- PWA Install Banner -->
+    <div class="app-install-bar" id="app-install-bar">
+      <div>
+        <i class="fa-solid fa-mobile-button text-gold" style="margin-right: 0.4rem;"></i>
+        <span>Install <strong>Mirchi Pure Mobile App</strong></span>
+      </div>
+      <button style="background: var(--clr-gold); color: #1C1917; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.72rem;" onclick="showToast('App ready to add to home screen!', 'success'); document.getElementById('app-install-bar').style.display='none';">
+        Install
+      </button>
+    </div>
+
+    <!-- Top Announcement Ticker -->
     <div class="top-bar">
       <div class="container top-bar-inner">
         <div class="top-bar-ticker">
           <i class="fa-solid fa-wand-magic-sparkles text-gold"></i>
-          <span>FRESH BATCH SPECIAL: Get 15% OFF with code <strong>FRESH15</strong> | Free Shipping on orders over ₹499!</span>
-        </div>
-        <div class="top-bar-actions">
-          <a href="https://wa.me/919876543210" target="_blank" class="top-bar-link">
-            <i class="fa-brands fa-whatsapp"></i> Order via WhatsApp
-          </a>
-          <button class="mode-switch-btn" data-action="toggle-admin-mode" title="Access Store Manager Dashboard">
-            <i class="fa-solid fa-user-gear"></i> Owner Admin Portal
-          </button>
+          <span>Use code <strong>FRESH15</strong> for 15% OFF | Free Shipping > ₹499</span>
         </div>
       </div>
     </div>
 
-    <!-- Main Navigation Header -->
-    <header class="site-header">
-      <div class="container header-inner">
+    <!-- Mobile Top App Header Bar -->
+    <header class="app-header">
+      <div class="app-header-inner">
         
         <!-- Brand Logo -->
         <a href="#home" class="brand-logo">
@@ -60,32 +75,18 @@
           </div>
           <div class="brand-text-wrapper">
             <span class="brand-title">MIRCHI PURE</span>
-            <span class="brand-subtitle">HOMEMADE & HANDPICKED</span>
+            <span class="brand-subtitle">HOMEMADE & PURE</span>
           </div>
         </a>
 
-        <!-- Desktop Navigation Links -->
-        <nav>
-          <ul class="nav-menu">
-            <li><a href="#home" class="nav-link active">Home</a></li>
-            <li><a href="#shop" class="nav-link">Shop Powder</a></li>
-            <li><a href="#process" class="nav-link">Our Process</a></li>
-            <li><a href="#quality" class="nav-link">Quality</a></li>
-            <li><a href="#recipes" class="nav-link">Recipes</a></li>
-            <li><a href="#gallery" class="nav-link">Gallery</a></li>
-            <li><a href="#about" class="nav-link">About Us</a></li>
-          </ul>
-        </nav>
-
-        <!-- Header Action Icons -->
+        <!-- Header Actions -->
         <div class="header-actions">
-          <button class="icon-btn" data-action="open-tracker" title="Track Order Status">
-            <i class="fa-solid fa-truck-fast"></i>
+          <button class="mode-switch-btn" data-action="toggle-admin-mode" title="Store Owner Portal">
+            <i class="fa-solid fa-user-gear"></i> Admin
           </button>
 
-          <button class="icon-btn" onclick="showToast('Wishlist feature active! Saved items listed.', 'info')" title="Wishlist">
-            <i class="fa-regular fa-heart"></i>
-            <span class="badge-count wishlist-count">0</span>
+          <button class="icon-btn" data-action="open-tracker" title="Track Order">
+            <i class="fa-solid fa-truck-fast"></i>
           </button>
 
           <button class="icon-btn" data-action="open-cart" title="Shopping Cart">
@@ -96,495 +97,532 @@
       </div>
     </header>
 
-    <!-- HERO SECTION -->
-    <section id="home" class="hero-section">
-      <div class="container hero-grid">
-        
-        <!-- Hero Text Content -->
-        <div class="hero-content">
-          <div class="hero-badge badge badge-gold">
-            <i class="fa-solid fa-award"></i> Direct From Our Spice Mill
-          </div>
+    <!-- ==========================================================================
+         STOREFRONT VIEW
+         ========================================================================== -->
+    <div id="store-view">
+      
+      <!-- HERO SECTION -->
+      <section id="home" class="hero-section">
+        <div class="container hero-grid">
           
-          <h1 class="hero-title">
-            Pure Chilli.<br>
-            <span>Authentic Taste.</span>
-          </h1>
-
-          <p class="hero-description">
-            Freshly prepared Mirchi Powder made from carefully selected red chillies, hygienically processed and packed with care. No adulteration, no artificial color — just 100% natural homemade purity.
-          </p>
-
-          <div class="hero-ctas">
-            <a href="#shop" class="btn btn-primary">
-              <i class="fa-solid fa-cart-shopping"></i> Shop Fresh Powder
-            </a>
-            <a href="#process" class="btn btn-secondary">
-              <i class="fa-solid fa-circle-play"></i> See Our Story
-            </a>
-          </div>
-
-          <!-- Trust Badges -->
-          <div class="trust-badges-grid">
-            <div class="trust-badge-item">
-              <div class="trust-icon"><i class="fa-solid fa-seedling"></i></div>
-              <span class="trust-text">100% Quality Chilli</span>
+          <div class="hero-content">
+            <div class="hero-badge badge badge-gold">
+              <i class="fa-solid fa-award"></i> Direct From Spice Mill
             </div>
-            <div class="trust-badge-item">
-              <div class="trust-icon"><i class="fa-solid fa-shield-halved"></i></div>
-              <span class="trust-text">Hygienically Prepared</span>
-            </div>
-            <div class="trust-badge-item">
-              <div class="trust-icon"><i class="fa-solid fa-box-open"></i></div>
-              <span class="trust-text">Freshly Packed Batch</span>
-            </div>
-            <div class="trust-badge-item">
-              <div class="trust-icon"><i class="fa-solid fa-bowl-food"></i></div>
-              <span class="trust-text">Authentic Indian Taste</span>
-            </div>
-          </div>
-        </div>
+            
+            <h1 class="hero-title">
+              Pure Chilli.<br>
+              <span>Authentic Taste.</span>
+            </h1>
 
-        <!-- Hero Visual Showcase -->
-        <div class="hero-visual-wrapper">
-          <div class="hero-img-card">
-            <img src="assets/images/hero_chilli_pack.jpg" alt="Mirchi Pure Packaged Chilli Powder" />
-          </div>
-
-          <!-- Floating Badges -->
-          <div class="floating-card floating-card-1">
-            <i class="fa-solid fa-house-chimney text-red" style="font-size: 1.6rem;"></i>
-            <div>
-              <div class="float-stat">10,000+</div>
-              <div class="float-label">Happy Indian Kitchens</div>
-            </div>
-          </div>
-
-          <div class="floating-card floating-card-2">
-            <i class="fa-solid fa-star text-gold" style="font-size: 1.6rem;"></i>
-            <div>
-              <div class="float-stat">4.9 / 5.0</div>
-              <div class="float-label">Customer Purity Rating</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- OUR STORY & 7-STEP PREPARATION PROCESS -->
-    <section id="process" class="section-padding process-section">
-      <div class="container">
-        
-        <div class="section-header">
-          <span class="section-subtitle">From Fresh Chillies to Your Kitchen</span>
-          <h2 class="section-title">Made With Care, From Chillies to Powder</h2>
-          <p>Unlike commercial brands that buy bulk third-party powders, Mirchi Pure handles every single stage of chilli selection, drying, cold grinding, and packaging in our own facility.</p>
-        </div>
-
-        <!-- Horizontal Process Steps Grid -->
-        <div class="process-timeline" id="process-timeline-container">
-          <!-- Rendered dynamically via app.js -->
-        </div>
-
-        <!-- In-House Preparation Banner -->
-        <div class="direct-prep-banner">
-          <div class="direct-prep-icon">
-            <i class="fa-solid fa-mortar-pestle"></i>
-          </div>
-          <div class="direct-prep-content">
-            <h3>Prepared By Us — Not Resold!</h3>
-            <p>We take pride in preparing our chilli powder ourselves rather than simply reselling third-party commercial products. This guarantees absolute hygiene, fresh batch milling, and uncompromised spice strength in every pouch.</p>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- PRODUCT CATALOG SHOPPING SECTION -->
-    <section id="shop" class="section-padding">
-      <div class="container">
-        
-        <div class="section-header">
-          <span class="section-subtitle">Freshly Milled Batches</span>
-          <h2 class="section-title">Explore Our Pure Mirchi Range</h2>
-          <p>Choose from classic balanced heat, fiery Teja spice, or ruby-red colour special blends. Select your preferred pack size below.</p>
-        </div>
-
-        <!-- Catalog Filter Controls -->
-        <div class="catalog-header">
-          <div class="filter-pills">
-            <button class="filter-pill active" data-category="All">All Flavours</button>
-            <button class="filter-pill" data-category="Classic">Classic Medium</button>
-            <button class="filter-pill" data-category="Fiery Hot">Fiery Hot</button>
-            <button class="filter-pill" data-category="High Colour">High Colour</button>
-            <button class="filter-pill" data-category="Combos">Value Combos</button>
-            <button class="filter-pill" data-category="Specialty">Specialty Grinds</button>
-          </div>
-
-          <div class="search-box-wrapper">
-            <i class="fa-solid fa-magnifying-glass search-icon-inside"></i>
-            <input type="text" id="catalog-search" class="search-input" placeholder="Search chilli powder..." />
-          </div>
-        </div>
-
-        <!-- Products Grid Container -->
-        <div class="products-grid" id="products-grid">
-          <!-- Rendered dynamically via app.js -->
-        </div>
-
-      </div>
-    </section>
-
-    <!-- QUALITY SECTION ("Quality You Can Taste") -->
-    <section id="quality" class="section-padding" style="background-color: #FFFDF9;">
-      <div class="container">
-        
-        <div class="section-header">
-          <span class="section-subtitle">Uncompromised Standard</span>
-          <h2 class="section-title">Quality You Can Taste</h2>
-          <p>Every pouch of Mirchi Pure reflects our commitment to traditional food ethics, safety, and deep culinary flavor.</p>
-        </div>
-
-        <div class="quality-grid">
-          <div class="quality-card">
-            <div class="quality-card-icon"><i class="fa-solid fa-seedling"></i></div>
-            <h3>Handpicked Red Chillies</h3>
-            <p style="font-size: 0.9rem; color: var(--clr-text-muted);">Selected at peak harvest ripeness from Guntur and Byadgi farms for natural essential spice oils.</p>
-          </div>
-
-          <div class="quality-card">
-            <div class="quality-card-icon"><i class="fa-solid fa-hand-sparkles"></i></div>
-            <h3>Hygienic Preparation</h3>
-            <p style="font-size: 0.9rem; color: var(--clr-text-muted);">Processed in stainless steel mills under strict sanitization and clean room conditions.</p>
-          </div>
-
-          <div class="quality-card">
-            <div class="quality-card-icon"><i class="fa-solid fa-gears"></i></div>
-            <h3>Slow Cold Grinding</h3>
-            <p style="font-size: 0.9rem; color: var(--clr-text-muted);">Ground slowly so friction heat never burns away the volatile aroma and natural deep red pigments.</p>
-          </div>
-
-          <div class="quality-card">
-            <div class="quality-card-icon"><i class="fa-solid fa-clipboard-check"></i></div>
-            <h3>Quality Inspection</h3>
-            <p style="font-size: 0.9rem; color: var(--clr-text-muted);">Rigorous checks for pungency levels, texture fineness, and zero synthetic adulteration.</p>
-          </div>
-
-          <div class="quality-card">
-            <div class="quality-card-icon"><i class="fa-solid fa-box-open"></i></div>
-            <h3>Nitrogen Aroma Seal</h3>
-            <p style="font-size: 0.9rem; color: var(--clr-text-muted);">Multi-layer food-grade barrier pouches preserve farm-fresh pungency for up to 12 months.</p>
-          </div>
-
-          <div class="quality-card">
-            <div class="quality-card-icon"><i class="fa-solid fa-rotate-left"></i></div>
-            <h3>Fresh Small Batches</h3>
-            <p style="font-size: 0.9rem; color: var(--clr-text-muted);">Milled weekly in limited quantities so you always receive powder prepared within days of dispatch.</p>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- RECIPE & USAGE SECTION -->
-    <section id="recipes" class="section-padding">
-      <div class="container">
-        
-        <div class="section-header">
-          <span class="section-subtitle">Culinary Inspiration</span>
-          <h2 class="section-title">Bring Magic to Your Recipes</h2>
-          <p>Discover how Mirchi Pure elevates traditional curries, spicy fries, rich biryanis, and homemade pickles.</p>
-        </div>
-
-        <div class="recipes-grid" id="recipes-container">
-          <!-- Rendered dynamically via app.js -->
-        </div>
-
-      </div>
-    </section>
-
-    <!-- MASONRY VISUAL GALLERY -->
-    <section id="gallery" class="section-padding" style="background: var(--clr-cream-bg);">
-      <div class="container">
-        
-        <div class="section-header">
-          <span class="section-subtitle">Behind The Scenes</span>
-          <h2 class="section-title">Our Visual Gallery</h2>
-          <p>A glimpse into our sun-drying fields, grinding mill, pure chilli powders, and delicious cooked dishes.</p>
-        </div>
-
-        <div class="gallery-grid">
-          <div class="gallery-item wide">
-            <img src="assets/images/chilli_drying.jpg" alt="Sun drying red chillies" loading="lazy" />
-            <div class="gallery-overlay">
-              <span class="gallery-caption">Traditional Sun-Drying Fields</span>
-            </div>
-          </div>
-
-          <div class="gallery-item">
-            <img src="assets/images/grinding_process.jpg" alt="Cold milling process" loading="lazy" />
-            <div class="gallery-overlay">
-              <span class="gallery-caption">Cold-Grinding Stainless Mill</span>
-            </div>
-          </div>
-
-          <div class="gallery-item">
-            <img src="assets/images/chilli_raw_powder.jpg" alt="Vibrant red mirchi powder" loading="lazy" />
-            <div class="gallery-overlay">
-              <span class="gallery-caption">100% Fine Crimson Powder</span>
-            </div>
-          </div>
-
-          <div class="gallery-item wide">
-            <img src="assets/images/chilli_curry_dish.jpg" alt="Rich Indian curry dish" loading="lazy" />
-            <div class="gallery-overlay">
-              <span class="gallery-caption">Rich Indian Curry Gravy</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- CUSTOMER REVIEWS -->
-    <section class="section-padding">
-      <div class="container">
-        
-        <div class="section-header">
-          <span class="section-subtitle">Loved by Home Chefs</span>
-          <h2 class="section-title">Customer Reviews</h2>
-          <p>Real feedback from households who switched to Mirchi Pure for their daily cooking.</p>
-        </div>
-
-        <div class="reviews-grid" id="reviews-container">
-          <!-- Rendered dynamically via app.js -->
-        </div>
-
-      </div>
-    </section>
-
-    <!-- HOW TO ORDER (3 STEPS) -->
-    <section class="section-padding" style="background-color: #FFFDF9; border-top: 1px solid var(--clr-border-light);">
-      <div class="container">
-        
-        <div class="section-header">
-          <span class="section-subtitle">Simple & Convenient</span>
-          <h2 class="section-title">How to Order in 3 Simple Steps</h2>
-        </div>
-
-        <div class="order-steps-grid">
-          <div class="order-step-card">
-            <span class="order-step-badge">STEP 1</span>
-            <div class="trust-icon" style="width: 60px; height: 60px; margin: 1rem auto; font-size: 1.5rem;">
-              <i class="fa-solid fa-bag-shopping"></i>
-            </div>
-            <h3 style="font-family: var(--ff-ui); font-size: 1.2rem; margin-bottom: 0.5rem;">Choose Your Pack</h3>
-            <p style="font-size: 0.9rem; color: var(--clr-text-muted);">Select your preferred heat level and pack size (100g, 250g, 500g, or 1kg).</p>
-          </div>
-
-          <div class="order-step-card">
-            <span class="order-step-badge">STEP 2</span>
-            <div class="trust-icon" style="width: 60px; height: 60px; margin: 1rem auto; font-size: 1.5rem;">
-              <i class="fa-solid fa-credit-card"></i>
-            </div>
-            <h3 style="font-family: var(--ff-ui); font-size: 1.2rem; margin-bottom: 0.5rem;">Add to Cart & Checkout</h3>
-            <p style="font-size: 0.9rem; color: var(--clr-text-muted);">Fill delivery address and select UPI, Debit/Credit Card, or Cash on Delivery (COD).</p>
-          </div>
-
-          <div class="order-step-card">
-            <span class="order-step-badge">STEP 3</span>
-            <div class="trust-icon" style="width: 60px; height: 60px; margin: 1rem auto; font-size: 1.5rem;">
-              <i class="fa-solid fa-truck-ramp-box"></i>
-            </div>
-            <h3 style="font-family: var(--ff-ui); font-size: 1.2rem; margin-bottom: 0.5rem;">Receive Fresh Mirchi</h3>
-            <p style="font-size: 0.9rem; color: var(--clr-text-muted);">Freshly prepared batch delivered directly to your doorstep in express aroma packaging.</p>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ABOUT US & BRAND STORY -->
-    <section id="about" class="section-padding">
-      <div class="container about-grid">
-        <div class="about-img-stack">
-          <img src="assets/images/hero_chilli_pack.jpg" alt="Mirchi Pure Story" class="about-img-main" />
-        </div>
-
-        <div>
-          <span class="section-subtitle">Our Heritage</span>
-          <h2 class="hero-title" style="font-size: 2.5rem; margin-bottom: 1rem;">
-            Prepared With Tradition.<br>
-            <span>Packed With Care.</span>
-          </h2>
-          <p style="font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.2rem;">
-            Mirchi Pure started in a small family kitchen with a simple mission: to bring back the genuine, rich, aromatic red chilli powder that our mothers and grandmothers used to mill at home.
-          </p>
-          <p style="font-size: 0.98rem; color: var(--clr-text-muted); line-height: 1.7; margin-bottom: 1.8rem;">
-            Dissatisfied with commercial supermarket chilli powders that rely on low-quality chillies, artificial dyes, and bulk reselling, we decided to partner directly with local farmers. We handpick, sun-dry, and slow-grind chilli powder ourselves in hygienic batches, ensuring pure taste and trust in every meal you cook.
-          </p>
-          
-          <div style="display: flex; gap: 1.5rem; align-items: center;">
-            <a href="#shop" class="btn btn-primary">Try Our Fresh Batch</a>
-            <button class="btn btn-whatsapp" data-action="open-whatsapp-order">
-              <i class="fa-brands fa-whatsapp"></i> Chat With Founder
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SPECIAL OFFER PROMO BANNER -->
-    <section class="section-padding" style="padding-top: 0;">
-      <div class="container">
-        <div class="promo-banner">
-          <div class="promo-content">
-            <span class="promo-tag">LIMITED PERIOD OFFER</span>
-            <h2>Fresh Batch. Fresh Flavour.</h2>
-            <p style="font-size: 1.1rem; color: var(--clr-cream-accent); margin-bottom: 2rem;">
-              Order today and get <strong>15% OFF</strong> your first order using code <strong style="color: var(--clr-gold-light);">FRESH15</strong> + Free Shipping on orders over ₹499.
+            <p class="hero-description">
+              Freshly prepared Mirchi Powder made from handpicked Guntur & Byadgi red chillies. Hygienically milled with zero artificial color or preservatives.
             </p>
-            <a href="#shop" class="btn btn-gold">
-              Order Your Pack Today <i class="fa-solid fa-arrow-right"></i>
+
+            <div class="hero-ctas">
+              <a href="#shop" class="btn btn-primary">
+                <i class="fa-solid fa-cart-shopping"></i> Shop Fresh
+              </a>
+              <a href="#process" class="btn btn-secondary">
+                <i class="fa-solid fa-circle-play"></i> Our Process
+              </a>
+            </div>
+
+            <!-- Trust Badges -->
+            <div class="trust-badges-grid">
+              <div class="trust-badge-item">
+                <div class="trust-icon"><i class="fa-solid fa-seedling"></i></div>
+                <span class="trust-text">100% Pure Chilli</span>
+              </div>
+              <div class="trust-badge-item">
+                <div class="trust-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <span class="trust-text">Hygienic Mill</span>
+              </div>
+              <div class="trust-badge-item">
+                <div class="trust-icon"><i class="fa-solid fa-box-open"></i></div>
+                <span class="trust-text">Fresh Packed</span>
+              </div>
+              <div class="trust-badge-item">
+                <div class="trust-icon"><i class="fa-solid fa-bowl-food"></i></div>
+                <span class="trust-text">Authentic Taste</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-img-card">
+            <img src="assets/images/hero_chilli_pack.jpg" alt="Mirchi Pure Packaged Powder" />
+          </div>
+
+        </div>
+      </section>
+
+      <!-- OUR STORY & 7-STEP PREPARATION PROCESS -->
+      <section id="process" class="section-padding process-section">
+        <div class="container">
+          
+          <div class="section-header">
+            <span class="section-subtitle">From Farm Chillies to Your Kitchen</span>
+            <h2 class="section-title">Made With Care, From Chillies to Powder</h2>
+            <p style="font-size: 0.88rem;">We handle every single stage of chilli selection, drying, cold grinding, and packaging in our own hygienic facility.</p>
+          </div>
+
+          <!-- Horizontal Process Steps Carousel -->
+          <div class="process-timeline" id="process-timeline-container">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <div class="direct-prep-banner">
+            <div class="direct-prep-icon">
+              <i class="fa-solid fa-mortar-pestle"></i>
+            </div>
+            <div class="direct-prep-content">
+              <h3>Prepared By Us — Not Resold!</h3>
+              <p>We prepare our chilli powder ourselves rather than simply reselling third-party commercial products.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- PRODUCT CATALOG SHOPPING SECTION -->
+      <section id="shop" class="section-padding">
+        <div class="container">
+          
+          <div class="section-header">
+            <span class="section-subtitle">Freshly Milled Batches</span>
+            <h2 class="section-title">Explore Our Mirchi Range</h2>
+          </div>
+
+          <!-- Catalog Filter Controls -->
+          <div class="catalog-header">
+            <div class="filter-pills">
+              <button class="filter-pill active" data-category="All">All Flavours</button>
+              <button class="filter-pill" data-category="Classic">Classic</button>
+              <button class="filter-pill" data-category="Fiery Hot">Fiery Hot</button>
+              <button class="filter-pill" data-category="High Colour">High Colour</button>
+              <button class="filter-pill" data-category="Combos">Combos</button>
+              <button class="filter-pill" data-category="Specialty">Specialty</button>
+            </div>
+
+            <div class="search-box-wrapper">
+              <i class="fa-solid fa-magnifying-glass search-icon-inside"></i>
+              <input type="text" id="catalog-search" class="search-input" placeholder="Search chilli powder..." />
+            </div>
+          </div>
+
+          <!-- Products Grid Container -->
+          <div class="products-grid" id="products-grid">
+            <!-- Rendered dynamically -->
+          </div>
+
+        </div>
+      </section>
+
+      <!-- QUALITY SECTION ("Quality You Can Taste") -->
+      <section id="quality" class="section-padding" style="background-color: #FFFDF9;">
+        <div class="container">
+          
+          <div class="section-header">
+            <span class="section-subtitle">Uncompromised Standard</span>
+            <h2 class="section-title">Quality You Can Taste</h2>
+          </div>
+
+          <div class="quality-grid">
+            <div class="quality-card">
+              <div class="quality-card-icon"><i class="fa-solid fa-seedling"></i></div>
+              <h3>Handpicked Chillies</h3>
+              <p style="font-size: 0.82rem; color: var(--clr-text-muted);">Selected from Guntur and Byadgi farms for maximum essential oils.</p>
+            </div>
+
+            <div class="quality-card">
+              <div class="quality-card-icon"><i class="fa-solid fa-hand-sparkles"></i></div>
+              <h3>Hygienic Preparation</h3>
+              <p style="font-size: 0.82rem; color: var(--clr-text-muted);">Milled in stainless steel clean room conditions.</p>
+            </div>
+
+            <div class="quality-card">
+              <div class="quality-card-icon"><i class="fa-solid fa-gears"></i></div>
+              <h3>Slow Cold Grinding</h3>
+              <p style="font-size: 0.82rem; color: var(--clr-text-muted);">Ground slowly so friction heat never burns away the volatile aroma.</p>
+            </div>
+
+            <div class="quality-card">
+              <div class="quality-card-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+              <h3>Quality Inspection</h3>
+              <p style="font-size: 0.82rem; color: var(--clr-text-muted);">Tested for pungency, texture, and zero adulteration.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- RECIPE & USAGE SECTION -->
+      <section id="recipes" class="section-padding">
+        <div class="container">
+          
+          <div class="section-header">
+            <span class="section-subtitle">Culinary Inspiration</span>
+            <h2 class="section-title">Kitchen Recipes</h2>
+          </div>
+
+          <div class="recipes-grid" id="recipes-container">
+            <!-- Rendered dynamically -->
+          </div>
+
+        </div>
+      </section>
+
+      <!-- MASONRY VISUAL GALLERY -->
+      <section id="gallery" class="section-padding" style="background: var(--clr-cream-bg);">
+        <div class="container">
+          
+          <div class="section-header">
+            <span class="section-subtitle">Behind The Scenes</span>
+            <h2 class="section-title">Visual Gallery</h2>
+          </div>
+
+          <div class="gallery-grid">
+            <div class="gallery-item">
+              <img src="assets/images/chilli_drying.jpg" alt="Sun drying chillies" loading="lazy" />
+              <div class="gallery-overlay"><span class="gallery-caption">Sun-Drying</span></div>
+            </div>
+
+            <div class="gallery-item">
+              <img src="assets/images/grinding_process.jpg" alt="Cold milling process" loading="lazy" />
+              <div class="gallery-overlay"><span class="gallery-caption">Cold Milling</span></div>
+            </div>
+
+            <div class="gallery-item">
+              <img src="assets/images/chilli_raw_powder.jpg" alt="Mirchi powder" loading="lazy" />
+              <div class="gallery-overlay"><span class="gallery-caption">Fine Powder</span></div>
+            </div>
+
+            <div class="gallery-item">
+              <img src="assets/images/chilli_curry_dish.jpg" alt="Curry dish" loading="lazy" />
+              <div class="gallery-overlay"><span class="gallery-caption">Indian Curry</span></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- CUSTOMER REVIEWS -->
+      <section class="section-padding">
+        <div class="container">
+          
+          <div class="section-header">
+            <span class="section-subtitle">Loved by Home Chefs</span>
+            <h2 class="section-title">Customer Reviews</h2>
+          </div>
+
+          <div class="reviews-grid" id="reviews-container">
+            <!-- Rendered dynamically -->
+          </div>
+
+        </div>
+      </section>
+
+      <!-- HOW TO ORDER (3 STEPS) -->
+      <section class="section-padding" style="background-color: #FFFDF9; border-top: 1px solid var(--clr-border-light);">
+        <div class="container">
+          
+          <div class="section-header">
+            <span class="section-subtitle">3 Simple Steps</span>
+            <h2 class="section-title">How to Order</h2>
+          </div>
+
+          <div class="order-steps-grid">
+            <div class="order-step-card">
+              <span class="order-step-badge">STEP 1</span>
+              <div class="trust-icon" style="width: 44px; height: 44px; margin: 0.6rem auto; font-size: 1.2rem;">
+                <i class="fa-solid fa-bag-shopping"></i>
+              </div>
+              <h3 style="font-family: var(--ff-ui); font-size: 1.05rem; margin-bottom: 0.3rem;">Select Pack</h3>
+              <p style="font-size: 0.82rem; color: var(--clr-text-muted);">Choose weight (100g, 250g, 500g, 1kg).</p>
+            </div>
+
+            <div class="order-step-card">
+              <span class="order-step-badge">STEP 2</span>
+              <div class="trust-icon" style="width: 44px; height: 44px; margin: 0.6rem auto; font-size: 1.2rem;">
+                <i class="fa-solid fa-credit-card"></i>
+              </div>
+              <h3 style="font-family: var(--ff-ui); font-size: 1.05rem; margin-bottom: 0.3rem;">Checkout</h3>
+              <p style="font-size: 0.82rem; color: var(--clr-text-muted);">Select UPI or Cash on Delivery.</p>
+            </div>
+
+            <div class="order-step-card">
+              <span class="order-step-badge">STEP 3</span>
+              <div class="trust-icon" style="width: 44px; height: 44px; margin: 0.6rem auto; font-size: 1.2rem;">
+                <i class="fa-solid fa-truck-ramp-box"></i>
+              </div>
+              <h3 style="font-family: var(--ff-ui); font-size: 1.05rem; margin-bottom: 0.3rem;">Fresh Delivery</h3>
+              <p style="font-size: 0.82rem; color: var(--clr-text-muted);">Receive fresh powder at doorstep.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ABOUT US & BRAND STORY -->
+      <section id="about" class="section-padding">
+        <div class="container about-grid">
+          <img src="assets/images/hero_chilli_pack.jpg" alt="Mirchi Pure Story" class="about-img-main" />
+
+          <div>
+            <span class="section-subtitle">Our Heritage</span>
+            <h2 class="hero-title" style="font-size: 2rem; margin-bottom: 0.8rem;">
+              Prepared With Tradition.<br>
+              <span>Packed With Care.</span>
+            </h2>
+            <p style="font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.2rem;">
+              Mirchi Pure started with a mission to bring back genuine, rich, aromatic red chilli powder milled in fresh small batches.
+            </p>
+            
+            <div style="display: flex; gap: 0.8rem; align-items: center;">
+              <a href="#shop" class="btn btn-primary" style="font-size: 0.85rem;">Shop Fresh Batch</a>
+              <button class="btn btn-whatsapp" style="font-size: 0.85rem;" data-action="open-whatsapp-order">
+                <i class="fa-brands fa-whatsapp"></i> Chat Us
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SPECIAL OFFER BANNER -->
+      <section class="section-padding" style="padding-top: 0;">
+        <div class="container">
+          <div class="promo-banner">
+            <span class="promo-tag">APP EXCLUSIVE OFFER</span>
+            <h2>Fresh Batch. Fresh Flavour.</h2>
+            <p style="font-size: 0.95rem; color: var(--clr-cream-accent); margin-bottom: 1.5rem;">
+              Use code <strong style="color: var(--clr-gold-light);">FRESH15</strong> for 15% OFF + Free Delivery > ₹499.
+            </p>
+            <a href="#shop" class="btn btn-gold" style="font-size: 0.88rem;">
+              Order Now <i class="fa-solid fa-arrow-right"></i>
             </a>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- FOOTER -->
-    <footer class="site-footer">
-      <div class="container">
-        <div class="footer-grid">
-          
-          <!-- Column 1: Brand Info -->
-          <div class="footer-brand">
-            <div style="display: flex; align-items: center; gap: 0.6rem;">
-              <div class="brand-icon" style="width: 36px; height: 36px; font-size: 1rem;">
-                <i class="fa-solid fa-pepper-hot"></i>
+      <!-- FOOTER -->
+      <footer class="site-footer">
+        <div class="container">
+          <div class="footer-grid">
+            <div class="footer-brand">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div class="brand-icon" style="width: 32px; height: 32px; font-size: 0.9rem;">
+                  <i class="fa-solid fa-pepper-hot"></i>
+                </div>
+                <span style="font-family: var(--ff-heading); font-size: 1.2rem; font-weight: 800; color: #FFF;">MIRCHI PURE</span>
               </div>
-              <span style="font-family: var(--ff-heading); font-size: 1.4rem; font-weight: 800; color: #FFF;">MIRCHI PURE</span>
+              <p>100% authentic, freshly prepared homemade red chilli powder directly ground from handpicked Guntur chillies.</p>
+              <div class="social-links">
+                <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" class="social-btn"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://wa.me/919876543210" target="_blank" class="social-btn"><i class="fa-brands fa-whatsapp"></i></a>
+              </div>
             </div>
-            <p>100% authentic, freshly prepared homemade red chilli powder directly ground from handpicked Guntur & Byadgi chillies. Delivered fresh from our mill to your kitchen.</p>
-            <div class="social-links">
-              <a href="#" class="social-btn" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
-              <a href="#" class="social-btn" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-              <a href="#" class="social-btn" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
-              <a href="https://wa.me/919876543210" target="_blank" class="social-btn" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+
+            <div>
+              <h4 class="footer-title">Customer Support</h4>
+              <ul class="footer-links">
+                <li><i class="fa-brands fa-whatsapp text-green"></i> +91 98765 43210</li>
+                <li><i class="fa-solid fa-phone"></i> +91 80088 12345</li>
+                <li><i class="fa-solid fa-envelope"></i> care@mirchipure.com</li>
+              </ul>
             </div>
           </div>
 
-          <!-- Column 2: Quick Links -->
-          <div>
-            <h4 class="footer-title">Quick Links</h4>
-            <ul class="footer-links">
-              <li><a href="#home">Home</a></li>
-              <li><a href="#shop">Shop Powder</a></li>
-              <li><a href="#process">Our Process</a></li>
-              <li><a href="#recipes">Recipes</a></li>
-              <li><a href="#about">About Us</a></li>
-              <li><a href="#" data-action="open-tracker">Track Order</a></li>
-            </ul>
+          <div class="footer-bottom">
+            <span>© 2026 Mirchi Pure App. Prepared With Tradition.</span>
+            <span>UPI / Card / Cash on Delivery Supported</span>
           </div>
+        </div>
+      </footer>
 
-          <!-- Column 3: Customer Support -->
-          <div>
-            <h4 class="footer-title">Customer Support</h4>
-            <ul class="footer-links">
-              <li><i class="fa-brands fa-whatsapp text-green"></i> +91 98765 43210</li>
-              <li><i class="fa-solid fa-phone"></i> +91 80088 12345</li>
-              <li><i class="fa-solid fa-envelope"></i> care@mirchipure.com</li>
-              <li><i class="fa-solid fa-location-dot"></i> Guntur Spice Hub, AP - 522001</li>
-            </ul>
-          </div>
+      <!-- Floating WhatsApp Quick Button -->
+      <a href="#" class="whatsapp-float" data-action="open-whatsapp-order" title="Order via WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+      </a>
 
-          <!-- Column 4: Policies -->
-          <div>
-            <h4 class="footer-title">Trust & Policies</h4>
-            <ul class="footer-links">
-              <li><a href="#" onclick="openPolicyModal('privacy')">Privacy Policy</a></li>
-              <li><a href="#" onclick="openPolicyModal('terms')">Terms & Conditions</a></li>
-              <li><a href="#" onclick="openPolicyModal('shipping')">Shipping Policy</a></li>
-              <li><a href="#" onclick="openPolicyModal('refund')">Return & Refund Policy</a></li>
-              <li><a href="#" data-action="toggle-admin-mode">Owner Admin Login</a></li>
-            </ul>
-          </div>
+    </div> <!-- END STORE-VIEW -->
 
+
+    <!-- ==========================================================================
+         OWNER ADMIN MANAGEMENT PORTAL
+         ========================================================================== -->
+    <div class="admin-portal-wrapper" id="admin-portal">
+      
+      <nav class="admin-nav">
+        <div class="admin-nav-brand">
+          <i class="fa-solid fa-user-gear" style="color: var(--clr-gold);"></i>
+          <span>Mirchi Pure Owner Dashboard</span>
         </div>
 
-        <div class="footer-bottom">
-          <span>© 2026 Mirchi Pure. Prepared With Tradition. Packed With Care. All Rights Reserved.</span>
-          <span>Payment Options: UPI / Credit Card / Debit Card / Cash on Delivery</span>
+        <div class="admin-nav-actions">
+          <button class="btn btn-gold" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;" data-action="toggle-admin-mode">
+            <i class="fa-solid fa-store"></i> Storefront
+          </button>
         </div>
+      </nav>
+
+      <div class="admin-body" style="padding: 1.2rem;">
+        
+        <div class="admin-header-row" style="margin-bottom: 1rem;">
+          <div>
+            <h1 class="admin-title" style="font-size: 1.4rem;">Dashboard</h1>
+            <p style="color: #6B7280; font-size: 0.8rem;">Overview of sales, orders, and stock.</p>
+          </div>
+        </div>
+
+        <!-- KPI Summary Cards -->
+        <div class="kpi-grid" style="gap: 0.8rem;">
+          <div class="kpi-card sales" style="padding: 1rem;">
+            <span class="kpi-label">Revenue</span>
+            <span class="kpi-value" id="admin-kpi-sales" style="font-size: 1.5rem;">₹0</span>
+          </div>
+
+          <div class="kpi-card orders" style="padding: 1rem;">
+            <span class="kpi-label">Orders</span>
+            <span class="kpi-value" id="admin-kpi-orders" style="font-size: 1.5rem;">0</span>
+          </div>
+
+          <div class="kpi-card pending" style="padding: 1rem;">
+            <span class="kpi-label">Pending</span>
+            <span class="kpi-value" id="admin-kpi-pending" style="font-size: 1.5rem;">0</span>
+          </div>
+
+          <div class="kpi-card completed" style="padding: 1rem;">
+            <span class="kpi-label">Delivered</span>
+            <span class="kpi-value" id="admin-kpi-completed" style="font-size: 1.5rem;">0</span>
+          </div>
+        </div>
+
+        <!-- Admin View Tabs -->
+        <div class="admin-tabs" style="margin-bottom: 1rem;">
+          <button class="admin-tab-btn active" data-admin-target="admin-panel-sales" style="padding: 0.5rem 0.8rem; font-size: 0.82rem;">Sales</button>
+          <button class="admin-tab-btn" data-admin-target="admin-panel-orders" style="padding: 0.5rem 0.8rem; font-size: 0.82rem;">Orders</button>
+          <button class="admin-tab-btn" data-admin-target="admin-panel-products" style="padding: 0.5rem 0.8rem; font-size: 0.82rem;">Products</button>
+        </div>
+
+        <!-- Panel 1: Sales Chart -->
+        <div class="admin-section-panel active" id="admin-panel-sales">
+          <div class="admin-card-box" style="padding: 1rem;">
+            <h3 class="admin-card-title" style="font-size: 1rem;">Sales Performance</h3>
+            <div class="chart-canvas-wrapper" style="height: 220px;">
+              <canvas id="admin-sales-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: Customer Orders Table -->
+        <div class="admin-section-panel" id="admin-panel-orders">
+          <div class="admin-card-box" style="padding: 1rem;">
+            <h3 class="admin-card-title" style="font-size: 1rem;">Order Fulfillment</h3>
+            <div class="admin-table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-orders-tbody">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 3: Product Inventory Manager -->
+        <div class="admin-section-panel" id="admin-panel-products">
+          <div class="admin-card-box" style="padding: 1rem;">
+            <h3 class="admin-card-title" style="font-size: 1rem;">Products & Stock</h3>
+            <div class="admin-table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Edit</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-products-tbody">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
       </div>
-    </footer>
+    </div> <!-- END ADMIN-PORTAL -->
 
-    <!-- Floating WhatsApp Button -->
-    <a href="#" class="whatsapp-float" data-action="open-whatsapp-order" title="Order via WhatsApp">
-      <i class="fa-brands fa-whatsapp"></i>
-    </a>
 
-    <!-- Mobile Bottom Navigation Bar -->
+    <!-- Mobile App Bottom Navigation Bar -->
     <div class="mobile-bottom-nav">
       <a href="#home" class="mobile-nav-item active">
-        <i class="fa-solid fa-house" style="font-size: 1.1rem;"></i>
+        <i class="fa-solid fa-house"></i>
         <span>Home</span>
       </a>
       <a href="#shop" class="mobile-nav-item">
-        <i class="fa-solid fa-pepper-hot" style="font-size: 1.1rem;"></i>
+        <i class="fa-solid fa-pepper-hot"></i>
         <span>Shop</span>
       </a>
       <a href="#" class="mobile-nav-item" data-action="open-cart">
-        <i class="fa-solid fa-basket-shopping" style="font-size: 1.1rem;"></i>
+        <i class="fa-solid fa-basket-shopping"></i>
         <span>Cart (<span class="cart-count">0</span>)</span>
       </a>
       <a href="#" class="mobile-nav-item" data-action="open-tracker">
-        <i class="fa-solid fa-truck-fast" style="font-size: 1.1rem;"></i>
+        <i class="fa-solid fa-truck-fast"></i>
         <span>Track</span>
       </a>
       <a href="#" class="mobile-nav-item" data-action="open-whatsapp-order">
-        <i class="fa-brands fa-whatsapp" style="font-size: 1.1rem;"></i>
-        <span>WhatsApp</span>
+        <i class="fa-brands fa-whatsapp"></i>
+        <span>Chat</span>
       </a>
     </div>
 
-  </div> <!-- END STORE-VIEW -->
+  </div> <!-- END MOBILE-APP-WRAPPER -->
 
 
   <!-- ==========================================================================
-       MODALS & DRAWERS
+       MOBILE BOTTOM SHEET MODALS
        ========================================================================== -->
 
   <!-- Slide-Over Cart Drawer -->
   <div class="drawer-backdrop" id="cart-backdrop">
     <div class="cart-drawer">
       <div class="drawer-header">
-        <div style="display: flex; align-items: center; gap: 0.6rem;">
-          <i class="fa-solid fa-basket-shopping text-red" style="font-size: 1.2rem;"></i>
-          <h3 style="font-family: var(--ff-ui); font-size: 1.2rem;">Your Kitchen Cart</h3>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <i class="fa-solid fa-basket-shopping text-red"></i>
+          <h3 style="font-family: var(--ff-ui); font-size: 1.05rem;">Kitchen Cart</h3>
         </div>
-        <button id="close-cart-drawer" style="font-size: 1.2rem; color: var(--clr-text-muted);"><i class="fa-solid fa-xmark"></i></button>
+        <button id="close-cart-drawer"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <!-- Free Shipping Calculator Bar -->
       <div class="free-shipping-bar-box">
-        <div class="free-shipping-text" id="free-shipping-msg">Add items to get FREE Delivery</div>
+        <div class="free-shipping-text" id="free-shipping-msg">Add items for FREE Delivery</div>
         <div class="progress-bar-bg">
           <div class="progress-bar-fill" id="free-shipping-progress" style="width: 0%;"></div>
         </div>
       </div>
 
-      <!-- Cart Items Body -->
       <div class="cart-items-body" id="cart-items-container">
         <!-- Rendered dynamically -->
       </div>
 
-      <!-- Drawer Footer Summary & Actions -->
       <div class="drawer-footer">
-        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-          <input type="text" id="coupon-input" placeholder="Enter coupon code (e.g. FRESH15)" class="form-control" style="flex: 1; text-transform: uppercase;" />
-          <button class="btn btn-secondary" id="apply-coupon-btn" style="padding: 0.5rem 1rem;">Apply</button>
+        <div style="display: flex; gap: 0.4rem; margin-bottom: 0.8rem;">
+          <input type="text" id="coupon-input" placeholder="Coupon code (e.g. FRESH15)" class="form-control" style="flex: 1; text-transform: uppercase;" />
+          <button class="btn btn-secondary" id="apply-coupon-btn" style="padding: 0.4rem 0.8rem; font-size: 0.82rem;">Apply</button>
         </div>
 
         <div class="summary-row">
@@ -592,28 +630,28 @@
           <span id="cart-subtotal-val">₹0</span>
         </div>
         <div class="summary-row" style="color: var(--clr-dark-green);">
-          <span>Coupon Discount</span>
+          <span>Discount</span>
           <span id="cart-discount-val">₹0</span>
         </div>
         <div class="summary-row">
-          <span>Delivery Charges</span>
+          <span>Delivery</span>
           <span id="cart-shipping-val">₹0</span>
         </div>
         <div class="summary-row total">
-          <span>Total Amount</span>
+          <span>Total</span>
           <span id="cart-total-val">₹0</span>
         </div>
 
-        <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="proceed-checkout-btn">
-          Proceed to Checkout <i class="fa-solid fa-arrow-right"></i>
+        <button class="btn btn-primary" style="width: 100%; margin-top: 0.8rem; font-size: 0.9rem;" id="proceed-checkout-btn">
+          Checkout <i class="fa-solid fa-arrow-right"></i>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Product Detail / Quick View Modal -->
+  <!-- Product Detail Modal -->
   <div class="modal-wrapper" id="product-detail-modal">
-    <div class="modal-card" style="max-width: 840px;">
+    <div class="modal-card">
       <button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
       <div id="product-detail-container">
         <!-- Rendered dynamically -->
@@ -623,31 +661,25 @@
 
   <!-- Multi-Step Checkout Modal -->
   <div class="modal-wrapper" id="checkout-modal">
-    <div class="modal-card" style="max-width: 650px;">
+    <div class="modal-card">
       <button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
-      <h2 style="font-family: var(--ff-heading); color: var(--clr-deep-red); margin-bottom: 0.4rem;">Checkout & Delivery</h2>
-      <p style="font-size: 0.9rem; color: var(--clr-text-muted); margin-bottom: 1.5rem;">Enter your shipping address and choose your payment method.</p>
+      <h2 style="font-family: var(--ff-heading); color: var(--clr-deep-red); margin-bottom: 0.3rem; font-size: 1.4rem;">Checkout</h2>
 
       <form id="checkout-form">
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Full Name *</label>
-            <input type="text" id="cust-name" class="form-control" placeholder="e.g. Ramesh Kumar" required />
+            <input type="text" id="cust-name" class="form-control" placeholder="Ramesh Kumar" required />
           </div>
           <div class="form-group">
-            <label class="form-label">Mobile Number *</label>
-            <input type="tel" id="cust-phone" class="form-control" placeholder="e.g. 9876543210" required />
+            <label class="form-label">Mobile *</label>
+            <input type="tel" id="cust-phone" class="form-control" placeholder="9876543210" required />
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Email Address (Optional)</label>
-          <input type="email" id="cust-email" class="form-control" placeholder="e.g. ramesh@example.com" />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Street Address & House No *</label>
-          <input type="text" id="cust-address" class="form-control" placeholder="Flat / House No, Building, Street, Area" required />
+          <label class="form-label">Delivery Address *</label>
+          <input type="text" id="cust-address" class="form-control" placeholder="Flat, Street, Area" required />
         </div>
 
         <div class="form-row">
@@ -657,18 +689,18 @@
           </div>
           <div class="form-group">
             <label class="form-label">Pincode *</label>
-            <input type="text" id="cust-pincode" class="form-control" placeholder="6-digit Pincode" required />
+            <input type="text" id="cust-pincode" class="form-control" placeholder="Pincode" required />
           </div>
         </div>
 
-        <div style="margin-top: 1rem; margin-bottom: 1rem;">
-          <label class="form-label" style="margin-bottom: 0.6rem;">Select Payment Method:</label>
+        <div style="margin-top: 0.8rem; margin-bottom: 0.8rem;">
+          <label class="form-label">Payment Method:</label>
           <div class="payment-methods-grid">
             <label class="payment-method-card selected">
               <input type="radio" name="payment-mode" value="UPI / Online" checked />
               <div>
-                <strong>UPI / Credit / Debit Card</strong>
-                <div style="font-size: 0.78rem; color: var(--clr-text-muted);">Instant GPay, PhonePe, Cards</div>
+                <strong>UPI / Cards</strong>
+                <div style="font-size: 0.75rem; color: var(--clr-text-muted);">GPay, PhonePe, Cards</div>
               </div>
             </label>
 
@@ -676,19 +708,18 @@
               <input type="radio" name="payment-mode" value="Cash on Delivery" />
               <div>
                 <strong>Cash on Delivery (COD)</strong>
-                <div style="font-size: 0.78rem; color: var(--clr-text-muted);">Pay cash when doorstep delivery arrives</div>
+                <div style="font-size: 0.75rem; color: var(--clr-text-muted);">Pay on delivery</div>
               </div>
             </label>
           </div>
         </div>
 
-        <!-- Order Summary Preview -->
-        <div style="background: var(--clr-cream-bg); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;" id="checkout-order-summary">
+        <div style="background: var(--clr-cream-bg); padding: 0.8rem; border-radius: var(--radius-md); margin-bottom: 1rem;" id="checkout-order-summary">
           <!-- Rendered dynamically -->
         </div>
 
-        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.9rem;">
-          Confirm & Place Order <i class="fa-solid fa-circle-check"></i>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem; font-size: 0.95rem;">
+          Place Order <i class="fa-solid fa-circle-check"></i>
         </button>
       </form>
     </div>
@@ -696,21 +727,20 @@
 
   <!-- Order Success Modal -->
   <div class="modal-wrapper" id="order-success-modal">
-    <div class="modal-card" style="max-width: 540px;" id="order-success-details">
+    <div class="modal-card" id="order-success-details">
       <!-- Rendered dynamically -->
     </div>
   </div>
 
-  <!-- Order Tracking Lookup Modal -->
+  <!-- Order Tracking Modal -->
   <div class="modal-wrapper" id="tracker-modal">
-    <div class="modal-card" style="max-width: 580px;">
+    <div class="modal-card">
       <button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
-      <h2 style="font-family: var(--ff-heading); color: var(--clr-deep-red); margin-bottom: 0.4rem;">Track Your Mirchi Order</h2>
-      <p style="font-size: 0.9rem; color: var(--clr-text-muted); margin-bottom: 1.2rem;">Enter your Order Reference ID (e.g. MRC-84920) or Mobile Number.</p>
+      <h2 style="font-family: var(--ff-heading); color: var(--clr-deep-red); margin-bottom: 0.3rem; font-size: 1.3rem;">Track Order</h2>
 
-      <form id="tracking-form" style="display: flex; gap: 0.6rem; margin-bottom: 1rem;">
-        <input type="text" id="tracker-input" class="form-control" placeholder="Enter Order ID or Phone" style="flex: 1;" required />
-        <button type="submit" class="btn btn-primary">Track</button>
+      <form id="tracking-form" style="display: flex; gap: 0.5rem; margin-bottom: 0.8rem;">
+        <input type="text" id="tracker-input" class="form-control" placeholder="Order ID or Phone" style="flex: 1;" required />
+        <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1rem;">Track</button>
       </form>
 
       <div id="tracking-result-box">
@@ -721,222 +751,46 @@
 
   <!-- WhatsApp Quick Order Modal -->
   <div class="modal-wrapper" id="whatsapp-modal">
-    <div class="modal-card" style="max-width: 500px;">
+    <div class="modal-card">
       <button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
-      <div style="text-align: center; margin-bottom: 1.2rem;">
-        <i class="fa-brands fa-whatsapp text-green" style="font-size: 3rem;"></i>
-        <h3 style="color: var(--clr-heading-dark); margin-top: 0.4rem;">Direct WhatsApp Ordering</h3>
-        <p style="font-size: 0.88rem; color: var(--clr-text-muted);">Chat directly with our preparation team to customize your pack or place quick orders.</p>
+      <div style="text-align: center; margin-bottom: 1rem;">
+        <i class="fa-brands fa-whatsapp text-green" style="font-size: 2.5rem;"></i>
+        <h3 style="color: var(--clr-heading-dark); margin-top: 0.3rem;">WhatsApp Order</h3>
       </div>
 
-      <div style="background: #E8F5E9; padding: 1rem; border-radius: var(--radius-md); font-family: monospace; font-size: 0.85rem; color: #1B4D3E; white-space: pre-wrap; margin-bottom: 1.2rem;" id="whatsapp-message-preview">
-        <!-- Pre-filled message preview -->
+      <div style="background: #E8F5E9; padding: 0.8rem; border-radius: var(--radius-md); font-family: monospace; font-size: 0.8rem; color: #1B4D3E; white-space: pre-wrap; margin-bottom: 1rem;" id="whatsapp-message-preview">
+        <!-- Message preview -->
       </div>
 
-      <button class="btn btn-whatsapp" style="width: 100%;" id="send-whatsapp-btn">
-        Open WhatsApp Chat Now <i class="fa-solid fa-paper-plane"></i>
+      <button class="btn btn-whatsapp" style="width: 100%; font-size: 0.9rem;" id="send-whatsapp-btn">
+        Open WhatsApp <i class="fa-solid fa-paper-plane"></i>
       </button>
     </div>
   </div>
 
   <!-- Recipe Detail Modal -->
   <div class="modal-wrapper" id="recipe-detail-modal">
-    <div class="modal-card" style="max-width: 650px;" id="recipe-modal-container">
+    <div class="modal-card" id="recipe-modal-container">
       <!-- Rendered dynamically -->
     </div>
   </div>
 
-  <!-- Policy Modals -->
-  <div class="modal-wrapper" id="policy-modal">
-    <div class="modal-card" style="max-width: 650px;">
-      <button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
-      <h2 style="font-family: var(--ff-heading); color: var(--clr-deep-red); margin-bottom: 1rem;" id="policy-title">Brand Policies</h2>
-      <div style="font-size: 0.92rem; line-height: 1.6; color: var(--clr-text-body);" id="policy-content">
-        <!-- Policy content populated dynamically -->
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ==========================================================================
-       OWNER ADMIN MANAGEMENT PORTAL
-       ========================================================================== -->
-  <div class="admin-portal-wrapper" id="admin-portal">
-    
-    <!-- Admin Top Nav -->
-    <nav class="admin-nav">
-      <div class="admin-nav-brand">
-        <i class="fa-solid fa-user-gear" style="color: var(--clr-gold);"></i>
-        <span>Mirchi Pure Owner Control Panel</span>
-      </div>
-
-      <div class="admin-nav-actions">
-        <button class="btn btn-gold" data-action="toggle-admin-mode">
-          <i class="fa-solid fa-store"></i> Back to Storefront
-        </button>
-      </div>
-    </nav>
-
-    <div class="admin-body">
-      
-      <div class="admin-header-row">
-        <div>
-          <h1 class="admin-title">Dashboard & Analytics</h1>
-          <p style="color: #6B7280; font-size: 0.9rem;">Real-time overview of sales, active orders, and product stock levels.</p>
-        </div>
-      </div>
-
-      <!-- KPI Summary Cards -->
-      <div class="kpi-grid">
-        <div class="kpi-card sales">
-          <span class="kpi-label">Total Revenue</span>
-          <span class="kpi-value" id="admin-kpi-sales">₹0</span>
-          <span class="kpi-sub">Gross sales from store orders</span>
-        </div>
-
-        <div class="kpi-card orders">
-          <span class="kpi-label">Total Orders</span>
-          <span class="kpi-value" id="admin-kpi-orders">0</span>
-          <span class="kpi-sub">All-time customer orders</span>
-        </div>
-
-        <div class="kpi-card pending">
-          <span class="kpi-label">Pending Dispatch</span>
-          <span class="kpi-value" id="admin-kpi-pending">0</span>
-          <span class="kpi-sub">Needs packing or shipping</span>
-        </div>
-
-        <div class="kpi-card completed">
-          <span class="kpi-label">Delivered Orders</span>
-          <span class="kpi-value" id="admin-kpi-completed">0</span>
-          <span class="kpi-sub">Successfully fulfilled</span>
-        </div>
-
-        <div class="kpi-card stock">
-          <span class="kpi-label">Low Stock Variants</span>
-          <span class="kpi-value" id="admin-kpi-stock">0</span>
-          <span class="kpi-sub">Variants under 30 units</span>
-        </div>
-      </div>
-
-      <!-- Admin View Tabs -->
-      <div class="admin-tabs">
-        <button class="admin-tab-btn active" data-admin-target="admin-panel-sales">Sales Trend</button>
-        <button class="admin-tab-btn" data-admin-target="admin-panel-orders">Customer Orders</button>
-        <button class="admin-tab-btn" data-admin-target="admin-panel-products">Product Inventory</button>
-        <button class="admin-tab-btn" data-admin-target="admin-panel-coupons">Coupons & Banners</button>
-      </div>
-
-      <!-- Panel 1: Sales Analytics Chart -->
-      <div class="admin-section-panel active" id="admin-panel-sales">
-        <div class="admin-card-box">
-          <h3 class="admin-card-title">7-Day Sales Performance (₹)</h3>
-          <div class="chart-canvas-wrapper">
-            <canvas id="admin-sales-chart"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- Panel 2: Customer Orders Table -->
-      <div class="admin-section-panel" id="admin-panel-orders">
-        <div class="admin-card-box">
-          <h3 class="admin-card-title">Order Management & Fulfillment</h3>
-          <div class="admin-table-container">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Customer Name & Phone</th>
-                  <th>Address</th>
-                  <th>Total & Mode</th>
-                  <th>Status</th>
-                  <th>Date & Time</th>
-                  <th>Update Status</th>
-                </tr>
-              </thead>
-              <tbody id="admin-orders-tbody">
-                <!-- Rendered dynamically -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Panel 3: Product Inventory Manager -->
-      <div class="admin-section-panel" id="admin-panel-products">
-        <div class="admin-card-box">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
-            <h3 class="admin-card-title" style="margin-bottom: 0;">Products & Price Manager</h3>
-          </div>
-
-          <div class="admin-table-container">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Category</th>
-                  <th>Base Price (100g/250g)</th>
-                  <th>Stock Level</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="admin-products-tbody">
-                <!-- Rendered dynamically -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Panel 4: Coupons & Banners -->
-      <div class="admin-section-panel" id="admin-panel-coupons">
-        <div class="admin-card-box">
-          <h3 class="admin-card-title">Active Store Coupons & Promos</h3>
-          <div class="admin-table-container">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>Coupon Code</th>
-                  <th>Description</th>
-                  <th>Discount Offer</th>
-                  <th>Min Spend</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="admin-coupons-tbody">
-                <!-- Rendered dynamically -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div> <!-- END ADMIN-PORTAL -->
-
-
-  <!-- Policy Handler Script -->
+  <!-- Desktop Preview Toggle Handler Script -->
   <script>
-    function openPolicyModal(type) {
-      const modal = document.getElementById('policy-modal');
-      const title = document.getElementById('policy-title');
-      const content = document.getElementById('policy-content');
-      if (!modal || !title || !content) return;
+    function setDeviceView(mode) {
+      const body = document.body;
+      const btnPhone = document.getElementById('btn-view-phone');
+      const btnFull = document.getElementById('btn-view-full');
 
-      if (type === 'privacy') {
-        title.textContent = "Privacy Policy";
-        content.innerHTML = "<p>Mirchi Pure values customer privacy. We collect address and contact info solely to fulfill chilli powder delivery orders. We never sell or share customer data with third party advertisers.</p>";
-      } else if (type === 'terms') {
-        title.textContent = "Terms & Conditions";
-        content.innerHTML = "<p>All Mirchi Pure products are freshly prepared under hygienic conditions. Prices listed include applicable taxes. Orders are dispatched within 24-48 hours of milling.</p>";
-      } else if (type === 'shipping') {
-        title.textContent = "Shipping & Delivery Policy";
-        content.innerHTML = "<p>We offer nationwide express delivery across India. Orders over ₹499 qualify for FREE shipping. Standard delivery takes 2 to 4 business days depending on location.</p>";
-      } else if (type === 'refund') {
-        title.textContent = "Return & Refund Policy";
-        content.innerHTML = "<p>If your package arrives damaged or unsealed, contact our WhatsApp support (+91 98765 43210) within 48 hours for an immediate free replacement or 100% full refund.</p>";
+      if (mode === 'phone') {
+        body.classList.add('mode-device-preview');
+        if (btnPhone) btnPhone.classList.add('active');
+        if (btnFull) btnFull.classList.remove('active');
+      } else {
+        body.classList.remove('mode-device-preview');
+        if (btnPhone) btnPhone.classList.remove('active');
+        if (btnFull) btnFull.classList.add('active');
       }
-      modal.classList.add('active');
     }
   </script>
 
